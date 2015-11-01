@@ -5,10 +5,10 @@ A module that simplifies adding Express handlers for Sequelize models.
 This command will install all the modules necessary to run the example.
 
 ```
-npm install express body-parser sequelize sequelize-handlers
+npm install express body-parser sqlite3 sequelize sequelize-handlers
 ```
 
-Below is the simplest example of an Express application that sets up a Sequelize 
+Below is a basic example of an Express application that sets up a Sequelize 
 model and adds all RESTful routes for it.
 
 ```
