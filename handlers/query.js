@@ -26,7 +26,6 @@ module.exports = function (model) {
         next();
     });
     
-    
     middlewares.push(function (req, res, next) {
         var query = req.locals.query;
 
