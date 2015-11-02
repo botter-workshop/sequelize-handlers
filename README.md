@@ -43,14 +43,25 @@ app.get('/hammers/:id', sequelizeHandlers.get(Model));
 Below are examples of each handler being mapped to a route. This is within the context 
 of a `hammers` resource with a corresponding Sequelize model `Hammer`.
 
-### create
+## create(model)
 The `create` handler will return a `201` upon success.
 
 ```
 app.post('/hammers', sequelizeHandlers.create(Hammer));
 ```
 
-### get
+#### *Request example*
+
+```
+POST /hammers
+Content-Type: application/json
+{
+	name: 'claw',
+	type: 'metal'
+}
+```
+
+## get(model)
 The `get` handler will return a `200 OK` upon success. The handler will return a `404 Not Found` 
 if the corresponding record could not be located.
 
@@ -58,7 +69,12 @@ if the corresponding record could not be located.
 app.get('/hammers/:id', sequelizeHandlers.get(Hammer));
 ```
 
-### query
+#### *Request example*
+```
+GET /hammers/1
+```
+
+## query(model)
 The `query` handler will always return paged results. The handler returns paging 
 data in the `Content-Range` header in the form `start - end / total`.
 
@@ -69,7 +85,66 @@ it will return a `206 Partial Content`.
 app.get('/hammers', sequelizeHandlers.query(Hammer));
 ```
 
-### remove
+#### *Request example*
+```
+GET /hammers
+```
+
+### Retrieving Specific Fields
+
+To return only specific fields for a result set you can utilize the `fields` parameter. This 
+parameter accepts a comma-separated list. 
+
+A call returning only `id` and `name` for a result set would look like this.
+
+```
+GET /hammers?fields=id,name
+```
+
+### Filtering
+
+You can perform exact-match filtering on any of a model's fields by using the field name as the key 
+and supplying it with a value. These parameters accept a comma-separated list.
+
+A call returning a result set for records with `type` of `new` or `existing`.
+
+```
+GET /hammers?type=new,existing
+```
+
+### Sorting
+
+To sort a result set based on one or several fields you can utilize the `sort` parameter. This 
+parameters accepts a comma-separated list. 
+
+Results will be sorted in the order of the fields provided. The default sorting order for fields 
+is ascending. Fields can be sorted in descending order by prefixing them with a dash (`-`).
+
+A call sorting a result by `id` ascending and then `name` descending would look like this.
+
+```
+GET /hammers?sort=id,-name
+```
+
+### Offset and Limit
+
+Query results are always paged. The `query` handler leverages the `offset` and `limit` 
+parameters to facilitate this.
+
+When the neither of these parameters are explicitly supplied the handler will assume the a default 
+`limit` of `50`.
+
+`offset` is a number indicating the start position in the result set you want to return.
+
+`limit` is a number indicating how many records past the start position you want returned.  
+
+A call with a result set starting at 5 and returning no more than 25 records would look like this.
+
+```
+GET /hammers?offset=5&limit=25
+```
+
+## remove(model)
 The `remove` handler will return a `204 No Content` upon success. The handler will return a `404 Not Found` 
 if the corresponding record could not be located.
 
@@ -77,7 +152,13 @@ if the corresponding record could not be located.
 app.delete('/hammers/:id', sequelizeHandlers.remove(Hammer));
 ```
 
-### update
+#### *Request example*
+
+```
+DELETE /hammers/1
+```
+
+## update(model)
 The `update` handler will return a `200 OK` upon success. The handler will return a `404 Not Found` 
 if the corresponding record could not be located.
 
@@ -85,8 +166,20 @@ if the corresponding record could not be located.
 app.put('/hammers/:id', sequelizeHandlers.update(Hammer));
 ```
 
+#### *Request example*
+
+```
+PUT /hammers/1
+Content-Type: application/json
+{
+	id: 12,
+	name: 'mallet',
+	type: 'wood'
+}
+```
+
 ## Error handling
-Any uncaught exceptions that are thrown by Sequelize operations get passed to whatever 
+Any uncaught exceptions that are thrown by Sequelize operations get passed to the 
 error middleware is present in the Express application.
 
 ## An example application
