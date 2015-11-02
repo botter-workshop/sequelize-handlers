@@ -1,3 +1,5 @@
+var HttpStatusError = require('../errors/HttpStatusError');
+
 module.exports = function (model) {
     return function (req, res, next) {
         model
@@ -9,7 +11,7 @@ module.exports = function (model) {
             if (row) {
                 res.send(row);
             } else {
-                res.sendStatus(404);
+                throw new HttpStatusError(404);
             }
         }
     };

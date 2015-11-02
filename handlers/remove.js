@@ -1,18 +1,18 @@
+var HttpStatusError = require('../errors/HttpStatusError');
+
 module.exports = function (model) {
     return function (req, res, next) {
         model
             .findById(req.params.id)
             .then(destroy)
+            .then(respond)
             .catch(next);
             
         function destroy(row) {
             if (!row) {
-                res.sendStatus(404);
+                throw new HttpStatusError(404);
             } else {
-                row
-                    .destroy()
-                    .then(respond)
-                    .catch(next);
+                return row.destroy();
             }
         }
         

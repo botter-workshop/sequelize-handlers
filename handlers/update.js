@@ -1,3 +1,5 @@
+var HttpStatusError = require('../errors/HttpStatusError');
+
 module.exports = function (model) {
     return function (req, res, next) {
         var body = req.body;
@@ -5,16 +7,14 @@ module.exports = function (model) {
         model
             .findById(req.params.id)
             .then(updateAttributes)
+            .then(respond)
             .catch(next);
             
         function updateAttributes(row) {
             if (!row) {
-                res.sendStatus(404);
+                throw new HttpStatusError(404);
             } else {
-                row
-                    .updateAttributes(body)
-                    .then(respond)
-                    .catch(next);
+                return row.updateAttributes(body);
             }
         }
         

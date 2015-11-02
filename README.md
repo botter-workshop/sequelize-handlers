@@ -62,7 +62,7 @@ Content-Type: application/json
 ```
 
 ## get(model)
-The `get` handler will return a `200 OK` upon success. The handler will return a `404 Not Found` 
+The `get` handler will return a `200 OK` upon success. The handler will return a `404 HttpStatusError` 
 if the corresponding record could not be located.
 
 ```
@@ -152,7 +152,7 @@ Content-Range: 5-30/50
 ```
 
 ## remove(model)
-The `remove` handler will return a `204 No Content` upon success. The handler will return a `404 Not Found` 
+The `remove` handler will return a `204 No Content` upon success. The handler will return a `404 HttpStatusError` 
 if the corresponding record could not be located.
 
 ```
@@ -166,7 +166,7 @@ DELETE /hammers/1
 ```
 
 ## update(model)
-The `update` handler will return a `200 OK` upon success. The handler will return a `404 Not Found` 
+The `update` handler will return a `200 OK` upon success. The handler will throw an `404 HttpStatusError` 
 if the corresponding record could not be located.
 
 ```
@@ -186,7 +186,10 @@ Content-Type: application/json
 ```
 
 ## Error handling
-Any uncaught exceptions that are thrown by Sequelize operations will be passed to the 
+Any HTTP status errors are thrown as `HttpStatusError`. They have a `status` property 
+containing the appropriate HTTP status code that was thrown (i.e. 404).
+
+Any uncaught exceptions that are thrown in the handlers will be passed as-is to the 
 Express application's error middleware.
 
 ## An example application
@@ -244,6 +247,15 @@ app.delete('/hammers/:id', sequelizeHandlers.remove(Hammer));
 
 // Add an update route
 app.put('/hammers/:id', sequelizeHandlers.update(Hammer));
+
+// Setup basic error handling
+app.use(function (err, req, res, next) {
+    if (err.name === 'HttpStatusError' && err.status) {
+        res.sendStatus(err.status);
+    } else {
+        res.sendStatus(500);
+    }
+});
 
 // Synchronize our models and start the application
 sequelize
