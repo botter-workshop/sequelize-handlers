@@ -10,7 +10,7 @@ module.exports = function (model) {
             
         function destroy(row) {
             if (!row) {
-                throw new HttpStatusError(404);
+                throw new HttpStatusError(404, 'Not Found');
             } else {
                 return row.destroy();
             }

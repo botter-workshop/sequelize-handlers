@@ -248,15 +248,6 @@ app.delete('/hammers/:id', sequelizeHandlers.remove(Hammer));
 // Add an update route
 app.put('/hammers/:id', sequelizeHandlers.update(Hammer));
 
-// Setup basic error handling
-app.use(function (err, req, res, next) {
-    if (err.name === 'HttpStatusError' && err.status) {
-        res.sendStatus(err.status);
-    } else {
-        res.sendStatus(500);
-    }
-});
-
 // Synchronize our models and start the application
 sequelize
     .sync()

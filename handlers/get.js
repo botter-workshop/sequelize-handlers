@@ -11,7 +11,7 @@ module.exports = function (model) {
             if (row) {
                 res.send(row);
             } else {
-                throw new HttpStatusError(404);
+                throw new HttpStatusError(404, 'Not Found');
             }
         }
     };

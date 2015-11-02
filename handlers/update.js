@@ -12,7 +12,7 @@ module.exports = function (model) {
             
         function updateAttributes(row) {
             if (!row) {
-                throw new HttpStatusError(404);
+                throw new HttpStatusError(404, 'Not Found');
             } else {
                 return row.updateAttributes(body);
             }
