@@ -1,5 +1,5 @@
 # sequelize-handlers
-A module that simplifies adding Express handlers for Sequelize models.
+A module that simplifies adding RESTful Express handlers for Sequelize models.
 
 ## Prerequisites
 The following are neceesary to utilize this module.
