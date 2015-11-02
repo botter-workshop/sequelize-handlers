@@ -138,10 +138,17 @@ When the neither of these parameters are explicitly supplied the handler will as
 
 `limit` is a number indicating how many records past the start position you want returned.  
 
-A call with a result set starting at 5 and returning no more than 25 records would look like this.
+A call with a result set starting at `5` and returning no more than `25` records would look like this.
 
 ```
 GET /hammers?offset=5&limit=25
+```
+
+If there were `50` records in total, the returned `Content-Range` header would look like 
+this.
+
+```
+Content-Range: 5-30/50
 ```
 
 ## remove(model)
@@ -179,8 +186,8 @@ Content-Type: application/json
 ```
 
 ## Error handling
-Any uncaught exceptions that are thrown by Sequelize operations get passed to the 
-error middleware is present in the Express application.
+Any uncaught exceptions that are thrown by Sequelize operations will be passed to the 
+Express application's error middleware.
 
 ## An example application
 This command will install all the modules necessary to run the example.
