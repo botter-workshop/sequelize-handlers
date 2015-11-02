@@ -186,8 +186,8 @@ Content-Type: application/json
 ```
 
 ## Error handling
-Any HTTP status errors are thrown as `HttpStatusError`. They have a `status` property 
-containing the appropriate HTTP status code that was thrown (i.e. 404).
+Any HTTP status errors are thrown as `HttpStatusError`. They will have a `status` property 
+containing the HTTP status code that was thrown (i.e. 404).
 
 Any uncaught exceptions that are thrown in the handlers will be passed as-is to the 
 Express application's error middleware.
