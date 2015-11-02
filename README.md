@@ -11,7 +11,7 @@ The following are neceesary to utilize this module.
 The Express application must use `body-parser` so that the request body 
 is parsed as JSON.
 
-```
+```js
 var express = require('express'),
     bodyParser = require('body-parser');
     
@@ -34,7 +34,7 @@ update  PUT /resource/:id
 
 To define a route simply pass your Sequelize model to the handler function.
 
-```
+```js
 var sequelizeHandlers = require('sequelize-handlers);
 
 app.get('/hammers/:id', sequelizeHandlers.get(Model));
@@ -46,7 +46,7 @@ of a `hammers` resource with a corresponding Sequelize model `Hammer`.
 ## create(model)
 The `create` handler will return a `201` upon success.
 
-```
+```js
 app.post('/hammers', sequelizeHandlers.create(Hammer));
 ```
 
@@ -65,7 +65,7 @@ Content-Type: application/json
 The `get` handler will return a `200 OK` upon success. The handler will return a `404 HttpStatusError` 
 if the corresponding record could not be located.
 
-```
+```js
 app.get('/hammers/:id', sequelizeHandlers.get(Hammer));
 ```
 
@@ -81,7 +81,7 @@ data in the `Content-Range` header in the form `start - end / total`.
 Upon success the handler will return a `200 OK` if the entire collection was returned otherwise 
 it will return a `206 Partial Content`.
 
-```
+```js
 app.get('/hammers', sequelizeHandlers.query(Hammer));
 ```
 
@@ -155,7 +155,7 @@ Content-Range: 5-30/50
 The `remove` handler will return a `204 No Content` upon success. The handler will return a `404 HttpStatusError` 
 if the corresponding record could not be located.
 
-```
+```js
 app.delete('/hammers/:id', sequelizeHandlers.remove(Hammer));
 ```
 
@@ -169,7 +169,7 @@ DELETE /hammers/1
 The `update` handler will return a `200 OK` upon success. The handler will throw an `404 HttpStatusError` 
 if the corresponding record could not be located.
 
-```
+```js
 app.put('/hammers/:id', sequelizeHandlers.update(Hammer));
 ```
 
@@ -195,14 +195,14 @@ Express application's error middleware.
 ## An example application
 This command will install all the modules necessary to run the example.
 
-```
+```console
 npm install express body-parser sqlite3 sequelize sequelize-handlers
 ```
 
 Below is a basic example of an Express application that sets up a Sequelize 
 model and adds all RESTful routes for it.
 
-```
+```js
 // NPM Modules
 var express = require('express'),
     bodyParser = require('body-parser'),
