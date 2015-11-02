@@ -35,7 +35,7 @@ update  PUT /resource/:id
 To define a route simply pass your Sequelize model to the handler function.
 
 ```js
-var sequelizeHandlers = require('sequelize-handlers);
+var sequelizeHandlers = require('sequelize-handlers');
 
 app.get('/hammers/:id', sequelizeHandlers.get(Model));
 ```
