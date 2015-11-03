@@ -2,7 +2,7 @@
 A module that simplifies adding RESTful Express handlers for Sequelize models.
 
 ## Prerequisites
-The following are neceesary to utilize this module.
+The following are necessary to utilize this module.
 
 * express
 * body-parser
