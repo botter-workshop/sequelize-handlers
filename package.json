@@ -1,6 +1,6 @@
 {
   "name": "sequelize-handlers",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A module that simplifies adding RESTful Express handlers for Sequelize models.",
   "main": "index.js",
   "scripts": {
