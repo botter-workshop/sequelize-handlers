@@ -4,6 +4,8 @@ module.exports = function (model) {
     return function (req, res, next) {
         var body = req.body;
         
+        model = req.model || model;
+        
         model
             .findById(req.params.id)
             .then(updateAttributes)

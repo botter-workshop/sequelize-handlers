@@ -8,6 +8,8 @@ module.exports = function (model) {
         var options = {},
             keys = {};
         
+        model = req.model || model;
+        
         keys.model = _.keys(model.rawAttributes);
         keys.query = _.keys(req.query);
         keys.filters = _.intersection(keys.model, keys.query);
@@ -27,6 +29,8 @@ module.exports = function (model) {
     
     middlewares.push(function (req, res, next) {
         var options = req.options;
+
+        model = req.model || model;
 
         model
             .findAndCountAll(options)

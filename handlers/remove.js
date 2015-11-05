@@ -2,6 +2,8 @@ var HttpStatusError = require('../errors/HttpStatusError');
 
 module.exports = function (model) {
     return function (req, res, next) {
+        model = req.model || model;
+        
         model
             .findById(req.params.id)
             .then(destroy)
