@@ -23,6 +23,9 @@ module.exports = function (model) {
         options = _.omit(options, _.isNull);
         
         req.options = _.assign({}, options, req.options);
+        if (model.scoped) {
+            _.assign(req.options.where, model.$scope);
+        }
         
         next();
     });
