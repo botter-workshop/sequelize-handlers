@@ -2,10 +2,12 @@ var HttpStatusError = require('../errors/HttpStatusError');
 
 module.exports = function (model) {
     return function (req, res, next) {
-        model = req.model || model;
-        
+        var options = req.options || {};; 
+
+        options.where[model.primaryKeyAttribute] = req.params.id;
+
         model
-            .findById(req.params.id)
+            .findOne(options)
             .then(destroy)
             .then(respond)
             .catch(next);
