@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 $ npm install sequelize-handlers
 ```
 
-# Usage
+## Usage
 The module provides RESTful handlers for `create`, `get`, `query`, `remove`, and `update` 
 operations. The handlers are expected to map to routes as below.
 
