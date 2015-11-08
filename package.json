@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/botter-workshop/sequelize-handlers.git""
+    "url": "git+https://github.com/botter-workshop/sequelize-handlers.git"
   },
   "author": "Ben Hanna <ben.hanna@botter.ventures>",
   "license": "MIT",
