@@ -1,7 +1,7 @@
 # sequelize-handlers
 A module that simplifies adding RESTful Express handlers for Sequelize models.
 
-## Prerequisites
+# Prerequisites
 The following are necessary to utilize this module.
 
 * express
@@ -20,7 +20,13 @@ var app = express();
 app.use(bodyParser.json());
 ```
 
-## Usage
+# Install
+
+```console
+$ npm install sequelize-handlers
+```
+
+# Usage
 The module provides RESTful handlers for `create`, `get`, `query`, `remove`, and `update` 
 operations. The handlers are expected to map to routes as below.
 
@@ -39,6 +45,8 @@ var sequelizeHandlers = require('sequelize-handlers');
 
 app.get('/hammers/:id', sequelizeHandlers.get(Model));
 ```
+
+# API
 
 Below are examples of each handler being mapped to a route. This is within the context 
 of a `hammers` resource with a corresponding Sequelize model `Hammer`.
@@ -196,7 +204,7 @@ Express application's error middleware.
 This command will install all the modules necessary to run the example.
 
 ```console
-npm install express body-parser sqlite3 sequelize sequelize-handlers
+$ npm install express body-parser sqlite3 sequelize sequelize-handlers
 ```
 
 Below is a basic example of an Express application that sets up a Sequelize 
@@ -258,5 +266,4 @@ function start() {
         console.log('Listening...');
     });
 }
-
 ```
