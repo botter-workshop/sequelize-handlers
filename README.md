@@ -1,7 +1,7 @@
 # sequelize-handlers
 A module that simplifies adding RESTful Express handlers for Sequelize models.
 
-# Prerequisites
+## Prerequisites
 The following are necessary to utilize this module.
 
 * express
@@ -20,7 +20,7 @@ var app = express();
 app.use(bodyParser.json());
 ```
 
-# Install
+## Install
 
 ```console
 $ npm install sequelize-handlers
@@ -46,12 +46,12 @@ var sequelizeHandlers = require('sequelize-handlers');
 app.get('/hammers/:id', sequelizeHandlers.get(Model));
 ```
 
-# API
+## API
 
 Below are examples of each handler being mapped to a route. This is within the context 
 of a `hammers` resource with a corresponding Sequelize model `Hammer`.
 
-## create(model)
+### create(model)
 The `create` handler will return a `201` upon success.
 
 ```js
@@ -69,7 +69,7 @@ Content-Type: application/json
 }
 ```
 
-## get(model)
+### get(model)
 The `get` handler will return a `200 OK` upon success. The handler will return a `404 HttpStatusError` 
 if the corresponding record could not be located.
 
@@ -82,7 +82,7 @@ app.get('/hammers/:id', sequelizeHandlers.get(Hammer));
 GET /hammers/1
 ```
 
-## query(model)
+### query(model)
 The `query` handler will always return paged results. The handler returns paging 
 data in the `Content-Range` header in the form `start - end / total`.
 
@@ -98,7 +98,7 @@ app.get('/hammers', sequelizeHandlers.query(Hammer));
 GET /hammers
 ```
 
-### Retrieving Specific Fields
+#### Retrieving Specific Fields
 
 To return only specific fields for a result set you can utilize the `fields` parameter. This 
 parameter accepts a comma-separated list. 
@@ -109,7 +109,7 @@ A call returning only `id` and `name` for a result set would look like this.
 GET /hammers?fields=id,name
 ```
 
-### Filtering
+#### Filtering
 
 You can perform exact-match filtering on any of a model's fields by using the field name as the key 
 and supplying it with a value. These parameters accept a comma-separated list.
@@ -120,7 +120,7 @@ A call returning a result set for records with `type` of `new` or `existing`.
 GET /hammers?type=new,existing
 ```
 
-### Sorting
+#### Sorting
 
 To sort a result set based on one or several fields you can utilize the `sort` parameter. This 
 parameters accepts a comma-separated list. 
@@ -134,7 +134,7 @@ A call sorting a result by `id` ascending and then `name` descending would look 
 GET /hammers?sort=id,-name
 ```
 
-### Offset and Limit
+#### Offset and Limit
 
 Query results are always paged. The `query` handler leverages the `offset` and `limit` 
 parameters to facilitate this.
@@ -159,7 +159,7 @@ this.
 Content-Range: 5-30/50
 ```
 
-## remove(model)
+### remove(model)
 The `remove` handler will return a `204 No Content` upon success. The handler will return a `404 HttpStatusError` 
 if the corresponding record could not be located.
 
@@ -173,7 +173,7 @@ app.delete('/hammers/:id', sequelizeHandlers.remove(Hammer));
 DELETE /hammers/1
 ```
 
-## update(model)
+### update(model)
 The `update` handler will return a `200 OK` upon success. The handler will throw an `404 HttpStatusError` 
 if the corresponding record could not be located.
 
