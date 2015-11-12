@@ -5,6 +5,7 @@ module.exports = function (model) {
         var body = req.body,
             options = req.options || {}; 
 
+        options.where = options.where || {};
         options.where[model.primaryKeyAttribute] = req.params.id;
 
         model
