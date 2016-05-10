@@ -22,7 +22,7 @@ module.exports = function (model) {
         
         options = _.omit(options, _.isNull);
         
-        req.options = _.assign({}, options, req.options);
+        req.options = _.merge({}, options, req.options);
         
         next();
     });
