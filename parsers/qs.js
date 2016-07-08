@@ -55,7 +55,11 @@ qs.filters = function (options) {
     if (!_.isEmpty(options)) {
         filters = {};
         _.forOwn(options, function (value, key) {
-            filters[key] = value.split(',');
+            try {
+                filters[key] = JSON.parse(value);
+            } catch (err) {
+                filters[key] = value.split(',');
+            }
         });
     }
     
