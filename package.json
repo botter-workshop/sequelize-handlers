@@ -3,7 +3,11 @@
   "version": "0.1.7",
   "description": "A module that simplifies adding RESTful Express handlers for Sequelize models.",
   "keywords": [
-    "express", "rest", "sequelize", "api", "restful"
+    "express",
+    "rest",
+    "sequelize",
+    "api",
+    "restful"
   ],
   "main": "index.js",
   "scripts": {
@@ -20,6 +24,6 @@
   },
   "homepage": "https://github.com/botter-workshop/sequelize-handlers#readme",
   "dependencies": {
-    "lodash": "^3.10.1"
+    "lodash": "^4.13.1"
   }
 }
