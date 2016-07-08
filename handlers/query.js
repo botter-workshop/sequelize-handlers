@@ -20,7 +20,7 @@ module.exports = function (model) {
         options.order = qs.sort(req.query.sort);
         options.where = qs.filters(_.pick(req.query, keys.filters));
         
-        options = _.omit(options, _.isNull);
+        options = _.omitBy(options, _.isNull);
         
         req.options = _.merge({}, options, req.options);
         
