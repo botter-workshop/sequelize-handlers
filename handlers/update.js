@@ -33,7 +33,7 @@ function init(model) {
         function respond(row) {
             res
                 .status(200)
-                .send(req.transform(row));
+                .send(res.transform(row));
         }
     }
 };

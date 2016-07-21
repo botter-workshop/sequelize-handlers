@@ -3,8 +3,8 @@ var _ = require('lodash');
 module.exports = transform;
 
 function transform(req, res, next) {
-    if (!_.isFunction(req.transform)) {
-        req.transform = plain;
+    if (!_.isFunction(res.transform)) {
+        res.transform = plain;
     }
     
     next();
