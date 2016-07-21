@@ -1,9 +1,13 @@
 var HttpStatusError = require('../errors/HttpStatusError');
 
-module.exports = remove;
+module.exports = init;
 
-function remove(model) {
-    return function (req, res, next) {
+function init(model) {
+    return [
+        remove
+    ];
+    
+    function remove(req, res, next) {
         var options = req.options || {}; 
 
         options.where = options.where || {};
@@ -26,5 +30,5 @@ function remove(model) {
         function respond(row) {
             res.sendStatus(204);
         }
-    };
+    }
 };

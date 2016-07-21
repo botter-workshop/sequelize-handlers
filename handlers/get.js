@@ -1,9 +1,15 @@
-var HttpStatusError = require('../errors/HttpStatusError');
+var HttpStatusError = require('../errors/HttpStatusError'),
+    transform = require('../parsers/transform');
 
-module.exports = get;
+module.exports = init;
 
-function get(model) {
-    return function (req, res, next) {
+function init(model) {
+    return [
+        transform,
+        get
+    ];
+    
+    function get(req, res, next) {
         var options = req.options || {};
 
         options.where = options.where || {};
@@ -21,5 +27,5 @@ function get(model) {
                 throw new HttpStatusError(404, 'Not Found');
             }
         }
-    };
+    }
 };

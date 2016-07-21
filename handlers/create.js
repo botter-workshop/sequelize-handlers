@@ -1,7 +1,14 @@
-module.exports = create;
+var transform = require('../parsers/transform');
 
-function create(model) {
-    return function (req, res, next) {
+module.exports = init;
+
+function init(model) {
+    return [
+        transform,
+        create
+    ];
+    
+    function create(req, res, next) {
         var body = req.body;
         
         model
@@ -14,5 +21,5 @@ function create(model) {
                 .status(201)
                 .send(res.transform(row));
         }
-    };
+    }
 };

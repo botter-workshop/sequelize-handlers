@@ -1,12 +1,17 @@
 var _ = require('lodash'),
-    qs = require('../parsers/qs');
+    qs = require('../parsers/qs'),
+    transform = require('../parsers/transform');
 
-module.exports = query;
+module.exports = init;
 
-function query(model) {
-    var middlewares = [];
-    
-    middlewares.push(function (req, res, next) {
+function init(model) {
+   return [
+       transform,
+       filter,
+       query
+   ];
+   
+   function filter(req, res, next) {
         var options = {},
             keys = {};
         
@@ -27,9 +32,9 @@ function query(model) {
         req.options = _.merge({}, options, req.options);
         
         next();
-    });
+    }
     
-    middlewares.push(function (req, res, next) {
+    function query(req, res, next) {
         var options = req.options;
 
         model
@@ -53,7 +58,5 @@ function query(model) {
                 .set('Content-Range', start + '-' + end + '/' + count)
                 .send(res.transform(result.rows));
         }
-    });
-    
-    return middlewares;
+    }
 };

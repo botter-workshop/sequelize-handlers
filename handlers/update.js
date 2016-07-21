@@ -1,9 +1,15 @@
-var HttpStatusError = require('../errors/HttpStatusError');
+var HttpStatusError = require('../errors/HttpStatusError'),
+    transform = require('../parsers/transform');
 
-module.exports = update; 
+module.exports = init; 
 
-function update(model) {
-    return function (req, res, next) {
+function init(model) {
+    return [
+        transform,
+        update    
+    ];
+    
+    function update(req, res, next) {
         var body = req.body,
             options = req.options || {}; 
 
@@ -29,5 +35,5 @@ function update(model) {
                 .status(200)
                 .send(req.transform(row));
         }
-    };
+    }
 };
