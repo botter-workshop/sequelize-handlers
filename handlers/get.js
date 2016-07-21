@@ -1,8 +1,10 @@
 var HttpStatusError = require('../errors/HttpStatusError');
 
-module.exports = function (model) {
+module.exports = get;
+
+function get(model) {
     return function (req, res, next) {
-        var options = req.options || {};; 
+        var options = req.options || {};
 
         options.where = options.where || {};
         options.where[model.primaryKeyAttribute] = req.params.id;
@@ -14,7 +16,7 @@ module.exports = function (model) {
         
         function respond(row) {
             if (row) {
-                res.send(row);
+                res.send(res.transform(row));
             } else {
                 throw new HttpStatusError(404, 'Not Found');
             }

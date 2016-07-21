@@ -1,6 +1,8 @@
 var HttpStatusError = require('../errors/HttpStatusError');
 
-module.exports = function (model) {
+module.exports = update; 
+
+function update(model) {
     return function (req, res, next) {
         var body = req.body,
             options = req.options || {}; 
@@ -23,7 +25,9 @@ module.exports = function (model) {
         }
         
         function respond(row) {
-            res.status(200).send(row);
+            res
+                .status(200)
+                .send(req.transform(row));
         }
     };
 };

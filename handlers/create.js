@@ -1,4 +1,6 @@
-module.exports = function (model) {
+module.exports = create;
+
+function create(model) {
     return function (req, res, next) {
         var body = req.body;
         
@@ -8,7 +10,9 @@ module.exports = function (model) {
             .catch(next);
             
         function respond(row) {
-            res.status(201).send(row);
+            res
+                .status(201)
+                .send(res.transform(row));
         }
     };
 };

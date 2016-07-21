@@ -1,7 +1,9 @@
 var _ = require('lodash'),
     qs = require('../parsers/qs');
 
-module.exports = function (model) {
+module.exports = query;
+
+function query(model) {
     var middlewares = [];
     
     middlewares.push(function (req, res, next) {
@@ -47,8 +49,9 @@ module.exports = function (model) {
                 res.status(206);
             }
             
-            res.set('Content-Range', start + '-' + end + '/' + count);
-            res.send(result.rows);
+            res
+                .set('Content-Range', start + '-' + end + '/' + count)
+                .send(res.transform(result.rows));
         }
     });
     

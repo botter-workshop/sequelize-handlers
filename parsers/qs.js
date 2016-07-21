@@ -1,26 +1,59 @@
 var _ = require('lodash');
 
-var qs = {};
+module.exports = {
+    fields: fields,
+    filters: filters,
+    limit: limit,
+    offset: offset,
+    sort: sort
+}
 
-qs.limit = function (value) {
+function fields(options) {
+    var fields = null;
+    
+    if (options) {
+        fields = options.split(',');
+    }
+
+    return fields;
+}
+    
+function filters(options) {
+    var filters = null;
+    
+    if (!_.isEmpty(options)) {
+        filters = {};
+        _.forOwn(options, function (value, key) {
+            try {
+                filters[key] = JSON.parse(value);
+            } catch (err) {
+                filters[key] = value.split(',');
+            }
+        });
+    }
+    
+    return filters;
+}
+
+function limit(value) {
     value = parseInt(value);
     
     if (!value || value < 0) {
         value = 0;
     }    
     return value;
-};
+}
 
-qs.offset = function (value) {
+function offset(value) {
     value = parseInt(value);
     
     if (!value || value < 0) {
         value = 0;
     }
     return value;
-};
+}
 
-qs.sort = function (options) {
+function sort(options) {
     var properties,
         sort = null;
         
@@ -37,33 +70,4 @@ qs.sort = function (options) {
     }
     
     return sort;
-};
-
-qs.fields = function (options) {
-    var fields = null;
-    
-    if (options) {
-        fields = options.split(',');
-    }
-
-    return fields;
-};
-    
-qs.filters = function (options) {
-    var filters = null;
-    
-    if (!_.isEmpty(options)) {
-        filters = {};
-        _.forOwn(options, function (value, key) {
-            try {
-                filters[key] = JSON.parse(value);
-            } catch (err) {
-                filters[key] = value.split(',');
-            }
-        });
-    }
-    
-    return filters;
-};
-
-module.exports = qs;
+}

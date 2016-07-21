@@ -1,6 +1,8 @@
 var HttpStatusError = require('../errors/HttpStatusError');
 
-module.exports = function (model) {
+module.exports = remove;
+
+function remove(model) {
     return function (req, res, next) {
         var options = req.options || {}; 
 
