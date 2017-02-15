@@ -1,10 +1,10 @@
-var transform = require('../parsers/transform');
+var plainTransform = require('../transforms/plain');
 
 module.exports = init;
 
 function init(model) {
     return [
-        transform,
+        plainTransform,
         create
     ];
     

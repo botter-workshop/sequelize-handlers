@@ -1,11 +1,11 @@
 var HttpStatusError = require('../errors/HttpStatusError'),
-    transform = require('../parsers/transform');
+    plainTransform = require('../transforms/plain');
 
 module.exports = init;
 
 function init(model) {
     return [
-        transform,
+        plainTransform,
         get
     ];
     
