@@ -1,12 +1,14 @@
 var _ = require('lodash'),
     qs = require('../parsers/qs'),
-    transform = require('../parsers/transform');
+    distinctTransform = require('../transforms/distinct'),
+    plainTransform = require('../transforms/plain');
 
 module.exports = init;
 
 function init(model) {
    return [
-       transform,
+       distinctTransform,
+       plainTransform,
        filter,
        query
    ];
@@ -22,6 +24,7 @@ function init(model) {
         keys.filters = _.intersection(keys.model, keys.query);
         
         options.attributes = qs.fields(req.query.fields);
+        options.distinct = qs.distinct(req.query.distinct);
         options.limit = qs.limit(req.query.limit) || 50;
         options.offset = qs.offset(req.query.offset);
         options.order = qs.sort(req.query.sort);

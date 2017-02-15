@@ -1,11 +1,16 @@
 var _ = require('lodash');
 
 module.exports = {
+    distinct: distinct,
     fields: fields,
     filters: filters,
     limit: limit,
     offset: offset,
     sort: sort
+}
+
+function distinct(value) {
+    return value ? true : null;
 }
 
 function fields(options) {
