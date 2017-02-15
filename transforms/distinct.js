@@ -5,7 +5,7 @@ module.exports = transform;
 function transform(req, res, next) {
     var fields = null;
     
-    if (fields) {
+    if (req.query.distinct) {
         fields = req.query.distinct.split(',');
         res.transform = distinct;
     }
