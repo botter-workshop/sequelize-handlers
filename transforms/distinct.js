@@ -3,10 +3,9 @@ var _ = require('lodash');
 module.exports = transform;
 
 function transform(req, res, next) {
-    var fields = null;
+    var field = req.query.distinct;
     
-    if (req.query.distinct) {
-        fields = req.query.distinct.split(',');
+    if (field) {
         res.transform = distinct;
     }
 
@@ -14,7 +13,7 @@ function transform(req, res, next) {
 
     function distinct(data) {
         return _(data)
-            .map(_.partialRight(_.pick, fields))
+            .map(field)
             .uniqWith(_.isEqual)
             .value();
     }
