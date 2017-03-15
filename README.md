@@ -38,6 +38,10 @@ remove  DELETE /resource/:id
 update  PUT /resource/:id
 ```
 
+The name of the :id route param should match the name of your primary key. If
+you have multiple primary key columns, you can use each of their names as a
+different param (example: GET /resource/:id1/:id2).
+
 To define a route simply pass your Sequelize model to the handler function.
 
 ```js
@@ -199,6 +203,7 @@ containing the HTTP status code that was thrown (i.e. 404).
 
 Any uncaught exceptions that are thrown in the handlers will be passed as-is to the 
 Express application's error middleware.
+
 
 ## An example application
 This command will install all the modules necessary to run the example.
