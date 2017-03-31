@@ -14,6 +14,7 @@ function transform(req, res, next) {
     function distinct(data) {
         return _(data)
             .map(field)
+            .flatten()
             .uniqWith(_.isEqual)
             .value();
     }
