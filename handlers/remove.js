@@ -1,4 +1,5 @@
-var HttpStatusError = require('../errors/HttpStatusError');
+var _ = require('lodash'),
+    HttpStatusError = require('../errors/HttpStatusError');
 
 module.exports = init;
 
@@ -11,7 +12,7 @@ function init(model) {
         var options = req.options || {}; 
 
         options.where = options.where || {};
-        options.where[model.primaryKeyAttribute] = req.params.id;
+        _.forOwn(req.params, key => { if (model.primaryKeyAttributes.includes(key)) options.where[key] = req.params[key]; });
 
         model
             .findOne(options)
