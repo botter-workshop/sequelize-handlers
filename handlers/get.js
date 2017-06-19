@@ -1,4 +1,6 @@
-var HttpStatusError = require('../errors/HttpStatusError'),
+var _ = require('lodash'),
+    qs = require('../parsers/qs'),
+    HttpStatusError = require('../errors/HttpStatusError'),
     plainTransform = require('../transforms/plain');
 
 module.exports = init;
@@ -10,11 +12,17 @@ function init(model) {
     ];
     
     function get(req, res, next) {
-        var options = req.options || {};
-
-        options.where = options.where || {};
-        options.where[model.primaryKeyAttribute] = req.params.id;
-
+        var keys = {},
+            options = {};
+        
+        keys.model = _.keys(model.primaryKeyAttributes);
+        keys.params = _.keys(req.params);
+        keys.filters = _.intersection(keys.model, keys.params);
+    
+        options.where = qs.filters(_.pick(req.params, keys.filters))
+        
+        options = _.merge({}, options, req.options);
+        
         model
             .findOne(options)
             .then(respond)
