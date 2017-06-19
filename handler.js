@@ -1,16 +1,23 @@
-const HttpStatusError = require('./errors/HttpStatusError');
+const _ = require('lodash');
 
 class Handler {
-    constructor(model, options = { limit: 50, offset: 0 }) {
-        this.model = model;
-        this.limit = options.limit;
-        this.offset = options.offset;
+    constructor(Model) {
+        this.Model = Model;
+    }
+    
+    async create(req, res, next) {
+        try {
+            const row = await this.Model.create(req.body);
+            res.send(row);
+        } catch (error) {
+            next(error);
+        }
     }
     
     async get(req, res, next) {
         try {
-            const data = await this.findOne(req.params);
-            res.send(data);
+            const row = await this.findOne(req.params);
+            res.send(row);
         } catch (error) {
             next(error);
         }
@@ -18,8 +25,8 @@ class Handler {
     
     async destroy(req, res, next) {
         try {
-            const data = await this.findOne(req.params);
-            await data.destroy();
+            const row = await this.findOne(req.params);
+            await row.destroy();
             res.sendStatus(204);
         } catch (error) {
             next(error);
@@ -28,46 +35,44 @@ class Handler {
     
     async update(req, res, next) {
         try {
-            const data = await this.findOne(req, res, next);
-            const result = await data.updateAttributes(req.body);
-            res.send(result);
+            const row = await this.findOne(req, res, next);
+            const updated = await row.updateAttributes(req.body);
+            res.send(updated);
         } catch (error) {
             next(error);
         }
     }
     
-    async findOne(params, options = { where: {} }) {
-        const { rawAttributes } = this.model;
-        
-        for (let key in params) {
-            if (params.hasOwnProperty(key) && rawAttributes.hasOwnProperty(key)) {
-                options[key] = params[key];
-            }
-        }
-        
-        const data = await this.model.findOne(options);
+    async query(req, res, next) {
+        try {
+            const { rows, start, end, count } = await this.findAndCountAll(req.query);
             
-        if (!data) {
-            throw new HttpStatusError(404, 'Not Found');
+            res.set('Content-Range', `${start}-${end}/${count}`);
+            
+            if (count > end) {
+                res.status(206);
+            } else {
+                res.status(200);
+            }
+            
+            res.send(rows);
+        } catch (error) {
+            next(error);   
         }
+    }
+    
+    async findOne(params, options = { where: {} }) {
+        options.where = _.merge(this.filter(params), options.where);
         
-        return data;
+        const row = await this.Model.findOne(options);
+        
+        return row;
     }
     
     async findAndCountAll(params, options = { where: {} }) {
-        const { fields, limit = this.limit, offset = this.offset, sort, ...filters } = params;
-        const { rawAttributes } = this.model;
+        const { fields, limit = 50, offset = 0, sort, ...filters } = params;
         
-        for (let key in filters) {
-            if (filters.hasOwnProperty(key) && rawAttributes.hasOwnProperty(key)) {
-                const value = filters[key];
-                try {
-                    options.where[key] = JSON.parse(value);
-                } catch (error) {
-                    options.where[key] = value.split(',');
-                }
-            }
-        }
+        options.where = _.merge(this.filter(filters), options.where);
         
         if (fields) {
             options.attributes = fields.split(','); 
@@ -85,25 +90,27 @@ class Handler {
             });
         }
         
-        const { count, rows } = await this.Mode.findAndCountAll(options);
+        const { count, rows } = await this.Model.findAndCountAll(options);
         
-        return {
-            start: options.offset,
-            end: Math.max(count, options.offset + offset.limit),
-            count,
-            rows
-        };    
+        const start = offset;
+        const end = Math.max(count, offset + limit);
+        
+        return { rows, start, end, count };
     }
     
-    async query(req, res, next) {
-        try {
-            const { start, end, count, rows } = await this.findAndCountAll(req.query);
-            
-            res.set('Content-Range', `${start}-${end}/${count}`);
-            res.status(end === count ? 200 : 206);
-            res.send(rows);
-        } catch (error) {
-            next(error);   
-        }
+    filter(params, filters = {}) {
+        const { rawAttributes } = this.Model;
+        
+        _.forOwn(params, (value, key) => {
+            if (rawAttributes.hasOwnProperty(key)) {
+                try {
+                    filters[key] = JSON.parse(value);
+                } catch (error) {
+                    filters[key] = value.split(',');
+                }
+            }
+        });
+        
+        return filters;
     }
 }
