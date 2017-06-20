@@ -31,7 +31,7 @@ function parse(params, { rawAttributes }) {
         
         _(options.order)
             .forEach((pair) => {
-                if (!_.includes(options.group, pair.head())) {
+                if (!_.includes(options.group, _.head(pair))) {
                     throw new HttpStatusError(400, `Values in 'sort' must be present in 'group'.`);
                 } 
             });
