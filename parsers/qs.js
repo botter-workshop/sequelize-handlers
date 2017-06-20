@@ -1,75 +1,76 @@
-var _ = require('lodash');
+const _ = require('lodash');
 
-module.exports = {
-    distinct: distinct,
-    fields: fields,
-    filters: filters,
-    limit: limit,
-    offset: offset,
-    sort: sort
-}
+module.exports = parse;
 
-function distinct(value) {
-    return value ? true : null;
-}
-
-function fields(options) {
-    var fields = null;
+function parse(params, { rawAttributes }) {
+    const options = {
+        where: {}    
+    };
     
-    if (options) {
-        fields = options.split(',');
-    }
-
-    return fields;
-}
+    const keywords = [
+        'fields',
+        'group',
+        'limit',
+        'offset',
+        'sort'
+    ];
     
-function filters(options) {
-    var filters = null;
+    options.attributes = parseString(params.fields);
+    options.group = parseString(params.group);
+    options.limit = parseInteger(params.limit);
+    options.offset = parseInteger(params.offset);
+    options.order = parseSort(params.sort);
     
-    if (!_.isEmpty(options)) {
-        filters = {};
-        _.forOwn(options, function (value, key) {
-            try {
-                filters[key] = JSON.parse(value);
-            } catch (err) {
-                filters[key] = value.split(',');
+    _(params)
+        .omit(keywords)
+        .forOwn((value, key) => {
+            if (rawAttributes.hasOwnProperty(key)) {
+                options.where[key] = parseJson(value);
             }
         });
+    
+    return options;
+};
+
+function parseString(value) {
+    if (value) {
+        value = value.split(',');
     }
     
-    return filters;
+    return value;
 }
 
-function limit(value) {
+function parseJson(value) {
+    try {
+        value = JSON.parse(value);
+    } catch (error) {
+        value = parseString(value);
+    }
+    
+    return value;
+}
+
+function parseInteger(value) {
     value = parseInt(value);
     
     if (!value || value < 0) {
         value = 0;
-    }    
-    return value;
-}
-
-function offset(value) {
-    value = parseInt(value);
-    
-    if (!value || value < 0) {
-        value = 0;
     }
+    
     return value;
 }
 
-function sort(options) {
-    var properties,
-        sort = null;
+function parseSort(value) {
+    let sort = null;
         
-    if (options) {
-        properties = options.split(',');
+    if (value) {
+        const keys = parseString(value);
         
-        sort = _.map(properties, function (x) {
-            if (x.indexOf('-') === 0) {
-                return [x.substr(1), 'DESC'];
+        sort = _.map(keys, (key) => {
+            if (key.indexOf('-') === 0) {
+                return [key.substr(1), 'DESC'];
             } else {
-                return [x, 'ASC'];
+                return [key, 'ASC'];
             }
         });
     }
