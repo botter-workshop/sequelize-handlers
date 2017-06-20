@@ -43,7 +43,7 @@ class ModelHandler {
         ];
     }
     
-    query () {
+    query() {
         return [
             distinct,
             raw,
