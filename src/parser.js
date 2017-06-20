@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { HttpStatusError } = require('./errors');
 
 module.exports = {
     parse
@@ -11,6 +12,7 @@ function parse(params, { rawAttributes }) {
     
     const keywords = [
         'fields',
+        'group',
         'limit',
         'offset',
         'sort'
@@ -20,6 +22,14 @@ function parse(params, { rawAttributes }) {
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
     options.order = parseSort(params.sort);
+    
+    if (params.group) {
+        if (!params.sort) {
+            throw new HttpStatusError(400, `'sort' must be provided for 'group'`);
+        }
+        
+        options.attributes = options.group = parseString(params.group);
+    }
     
     _(params)
         .omit(keywords)
