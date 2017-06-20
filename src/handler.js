@@ -91,7 +91,7 @@ class ModelHandler {
             raw,
             async (req, res, next) => {
                 try {
-                    const row = await this.findOne(req, res, next);
+                    const row = await this.findOne(req.params);
                     
                     if (!row) {
                         throw new HttpStatusError(404, 'Not Found');
