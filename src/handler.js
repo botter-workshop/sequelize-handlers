@@ -80,7 +80,7 @@ class ModelHandler {
                 try {
                     const row = await this.findOne(req, res, next);
                     const updated = await row.updateAttributes(req.body);
-                    res.send(updated);
+                    res.send(res.transform(updated));
                 } catch (error) {
                     next(error);
                 }
