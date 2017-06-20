@@ -1,6 +1,6 @@
 {
   "name": "sequelize-handlers",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "A module that simplifies adding RESTful Express handlers for Sequelize models.",
   "keywords": [
     "express",
@@ -10,6 +10,9 @@
     "restful"
   ],
   "main": "index.js",
+  "engines": {
+    "node": ">= 7.10.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/botter-workshop/sequelize-handlers.git"
