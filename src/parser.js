@@ -25,10 +25,24 @@ function parse(params, { rawAttributes }) {
     
     if (params.group) {
         if (!params.sort) {
-            throw new HttpStatusError(400, `'sort' must be provided for 'group'`);
+            throw new HttpStatusError(400, `The 'sort' parameter is required for 'group'`);
         }
         
-        options.attributes = options.group = parseString(params.group);
+        const sortKeys = params.sort
+            .replace('-', '')
+            .split(',');
+            
+        const fieldsKeys = parseString(params.fields);
+        
+        const groupKeys = parseString(params.group);
+        
+        const unionKeys = _.union(sortKeys, fieldsKeys, groupKeys);
+        
+        if (unionKeys.length > groupKeys.length) {
+            throw new HttpStatusError(400, `Values in 'fields' and 'sort' must be present in 'group'.`);
+        }
+        
+        options.group = groupKeys;
     }
     
     _(params)
