@@ -12,32 +12,15 @@ function parse(params, { rawAttributes }) {
     
     const keywords = [
         'fields',
-        'group',
         'limit',
         'offset',
         'sort'
     ];
     
+    options.attributes = parseString(params.fields);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
     options.order = parseSort(params.sort);
-    
-    if (params.group) {
-        if (!options.order) {
-            throw new HttpStatusError(400, `The 'sort' parameter is required for 'group'`);
-        }
-        
-        options.attributes = options.group = parseString(params.group);
-        
-        _(options.order)
-            .forEach((pair) => {
-                if (!_.includes(options.group, _.head(pair))) {
-                    throw new HttpStatusError(400, `Values in 'sort' must be present in 'group'.`);
-                } 
-            });
-    } else {
-        options.attributes = parseString(params.fields);
-    }
     
     _(params)
         .omit(keywords)
@@ -71,7 +54,7 @@ function parseJson(value) {
 function parseInteger(value) {
     value = parseInt(value);
     
-    if (_.isNaN(value)) {
+    if (_.isNaN(value) || value < 0) {
         value = undefined;
     }
     
