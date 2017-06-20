@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const qs = require('./parsers/qs');
-const transforms = require('./transforms');
+const { parse } = require('./parser');
+const { distinct, raw } = require('./transforms');
 
 class ModelHandler {
     constructor(Model) {
@@ -9,8 +9,8 @@ class ModelHandler {
     
     create() {
         return [
-            transforms.raw,
-            async create(req, res, next) => {
+            raw,
+            async (req, res, next) => {
                 try {
                     const row = await this.Model.create(req.body);
                     res.send(res.transform(row));
@@ -23,7 +23,7 @@ class ModelHandler {
     
     get() {
         return [
-            transforms.raw,
+            raw,
             async (req, res, next) => {
                 try {
                     const row = await this.findOne(req.params);
@@ -37,7 +37,8 @@ class ModelHandler {
     
     query () {
         return [
-            transforms.raw,
+            distinct,
+            raw,
             async (req, res, next) => {
                 try {
                     const { rows, start, end, count } = await this.findAndCountAll(req.query);
@@ -74,7 +75,7 @@ class ModelHandler {
     
     update() {
         return [
-            transforms.raw,
+            raw,
             async (req, res, next) => {
                 try {
                     const row = await this.findOne(req, res, next);
@@ -88,13 +89,13 @@ class ModelHandler {
     }
     
     async findOne(params, options) {
-        options = _.merge(qs(params, this.Model), options);
+        options = _.merge(parse(params, this.Model), options);
         
         return await this.Model.findOne(options);
     }
     
     async findAndCountAll(params, options) {
-        options = _.merge(qs(params, this.Model), options);
+        options = _.merge(parse(params, this.Model), options);
         
         const { count, rows } = await this.Model.findAndCountAll(options);
         

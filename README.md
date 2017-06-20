@@ -41,9 +41,11 @@ update  PUT /resource/:id
 To define a route simply pass your Sequelize model to the handler function.
 
 ```js
-var sequelizeHandlers = require('sequelize-handlers');
+const { ModelHandler } = require('sequelize-handlers');
 
-app.get('/hammers/:id', sequelizeHandlers.get(Model));
+const hammerHandler = new ModelHandler(Model);
+
+app.get('/hammers/:id', hammerHandler.get());
 ```
 
 ## API
@@ -55,7 +57,7 @@ of a `hammers` resource with a corresponding Sequelize model `Hammer`.
 The `create` handler will return a `201` upon success.
 
 ```js
-app.post('/hammers', sequelizeHandlers.create(Hammer));
+app.post('/hammers', hammerHandler.create());
 ```
 
 #### *Request example*
@@ -74,7 +76,7 @@ The `get` handler will return a `200 OK` upon success. The handler will return a
 if the corresponding record could not be located.
 
 ```js
-app.get('/hammers/:id', sequelizeHandlers.get(Hammer));
+app.get('/hammers/:id', hammerHandler.get());
 ```
 
 #### *Request example*
@@ -90,7 +92,7 @@ Upon success the handler will return a `200 OK` if the entire collection was ret
 it will return a `206 Partial Content`.
 
 ```js
-app.get('/hammers', sequelizeHandlers.query(Hammer));
+app.get('/hammers', hammerHandler.query());
 ```
 
 #### *Request example*
@@ -164,7 +166,7 @@ The `remove` handler will return a `204 No Content` upon success. The handler wi
 if the corresponding record could not be located.
 
 ```js
-app.delete('/hammers/:id', sequelizeHandlers.remove(Hammer));
+app.delete('/hammers/:id', hammerHandler.remove());
 ```
 
 #### *Request example*
@@ -178,7 +180,7 @@ The `update` handler will return a `200 OK` upon success. The handler will throw
 if the corresponding record could not be located.
 
 ```js
-app.put('/hammers/:id', sequelizeHandlers.update(Hammer));
+app.put('/hammers/:id', hammerHandler.update());
 ```
 
 #### *Request example*
@@ -212,16 +214,16 @@ model and adds all RESTful routes for it.
 
 ```js
 // NPM Modules
-var express = require('express'),
-    bodyParser = require('body-parser'),
-    Sequelize = require('sequelize'),
-    sequelizeHandlers = require('sequelize-handlers');
+const express = require('express');
+const bodyParser = require('body-parser');
+const Sequelize = require('sequelize');
+const { ModelHandler } = require('sequelize-handlers');
 
 // Create the Sequelize instance
-var sequelize = new Sequelize('sqlite://database.sqlite');
+const sequelize = new Sequelize('sqlite://database.sqlite');
 
 // Define a Sequelize model
-var Hammer = sequelize.define('Hammer', {
+const Hammer = sequelize.define('Hammer', {
     id: {
         primaryKey: true,
         autoIncrement: true,
@@ -235,26 +237,29 @@ var Hammer = sequelize.define('Hammer', {
     }
 });
 
+// Create a handler instance
+const hammerHandler = new ModelHandler(Hammer);
+
 // Create the Express application
-var app = express();
+const app = express();
 
 // Setup our application so that the request body is parsed as JSON
 app.use(bodyParser.json());
 
 // Add a create route
-app.post('/hammers', sequelizeHandlers.create(Hammer));
+app.post('/hammers', hammerHandler.create());
 
 // Add a get route
-app.get('/hammers/:id', sequelizeHandlers.get(Hammer));
+app.get('/hammers/:id', hammerHandler.get());
 
 // Add a query route
-app.get('/hammers', sequelizeHandlers.query(Hammer));
+app.get('/hammers', hammerHandler.query());
 
 // Add a remove route
-app.delete('/hammers/:id', sequelizeHandlers.remove(Hammer));
+app.delete('/hammers/:id', hammerHandler.remove());
 
 // Add an update route
-app.put('/hammers/:id', sequelizeHandlers.update(Hammer));
+app.put('/hammers/:id', hammerHandler.update());
 
 // Synchronize our models and start the application
 sequelize
@@ -262,7 +267,7 @@ sequelize
     .then(start);
 
 function start() {
-    app.listen(process.env.PORT || 8080, function () {
+    app.listen(process.env.PORT || 8080, () => {
         console.log('Listening...');
     });
 }

@@ -1,6 +1,8 @@
 const _ = require('lodash');
 
-module.exports = parse;
+module.exports = {
+    parse
+};
 
 function parse(params, { rawAttributes }) {
     const options = {
@@ -9,14 +11,12 @@ function parse(params, { rawAttributes }) {
     
     const keywords = [
         'fields',
-        'group',
         'limit',
         'offset',
         'sort'
     ];
     
     options.attributes = parseString(params.fields);
-    options.group = parseString(params.group);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
     options.order = parseSort(params.sort);
