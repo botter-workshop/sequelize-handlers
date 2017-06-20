@@ -4,8 +4,9 @@ const { parse } = require('./parser');
 const { distinct, raw } = require('./transforms');
 
 class ModelHandler {
-    constructor(Model) {
-        this.Model = Model;
+    constructor(model, defaults = { limit: 50, offset: 0 }) {
+        this.model = model;
+        this.defaults = defaults;
     }
     
     create() {
@@ -13,7 +14,7 @@ class ModelHandler {
             raw,
             async (req, res, next) => {
                 try {
-                    const row = await this.Model.create(req.body);
+                    const row = await this.model.create(req.body);
                     res.status(201);
                     res.send(res.transform(row));
                 } catch (error) {
@@ -106,15 +107,16 @@ class ModelHandler {
     }
     
     async findOne(params, options) {
-        options = _.merge(parse(params, this.Model), options);
-        
-        return await this.Model.findOne(options);
+        options = _.merge(parse(params, this.model), options);
+
+        return await this.model.findOne(options);
     }
     
     async findAndCountAll(params, options) {
-        options = _.merge(parse(params, this.Model), options);
+        params = _.defaults(params, this.defaults);
+        options = _.merge(parse(params, this.model), options);
         
-        const { count, rows } = await this.Model.findAndCountAll(options);
+        const { count, rows } = await this.model.findAndCountAll(options);
         
         const start = options.offset;
         const end = Math.min(count, options.offset + options.limit);
