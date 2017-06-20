@@ -24,8 +24,8 @@ function parse(params, { rawAttributes }) {
     options.order = parseSort(params.sort);
     
     if (params.group) {
-        if (!params.sort) {
-            throw new HttpStatusError(400, `The 'sort' parameter is required for 'group'`);
+        if (!params.fields || !params.sort) {
+            throw new HttpStatusError(400, `The 'sort' and 'fields' parameters are required for 'group'`);
         }
         
         const sortKeys = params.sort
