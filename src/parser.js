@@ -18,31 +18,25 @@ function parse(params, { rawAttributes }) {
         'sort'
     ];
     
-    options.attributes = parseString(params.fields);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
     options.order = parseSort(params.sort);
     
     if (params.group) {
-        if (!params.fields || !params.sort) {
-            throw new HttpStatusError(400, `The 'sort' and 'fields' parameters are required for 'group'`);
+        if (!options.order) {
+            throw new HttpStatusError(400, `The 'sort' parameter is required for 'group'`);
         }
         
-        const sortKeys = params.sort
-            .replace('-', '')
-            .split(',');
-            
-        const fieldsKeys = parseString(params.fields);
+        options.attributes = options.group = parseString(params.group);
         
-        const groupKeys = parseString(params.group);
-        
-        const unionKeys = _.union(sortKeys, fieldsKeys, groupKeys);
-        
-        if (unionKeys.length > groupKeys.length) {
-            throw new HttpStatusError(400, `Values in 'fields' and 'sort' must be present in 'group'.`);
-        }
-        
-        options.group = groupKeys;
+        _(options.order)
+            .forEach((pair) => {
+                if (!_.includes(options.group, pair.head())) {
+                    throw new HttpStatusError(400, `Values in 'sort' must be present in 'group'.`);
+                } 
+            });
+    } else {
+        options.attributes = parseString(params.fields);
     }
     
     _(params)
@@ -85,7 +79,7 @@ function parseInteger(value) {
 }
 
 function parseSort(value) {
-    let sort = null;
+    let sort = undefined;
         
     if (value) {
         const keys = parseString(value);
