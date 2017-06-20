@@ -116,7 +116,13 @@ class ModelHandler {
         params = _.defaults(params, this.defaults);
         options = _.merge(parse(params, this.model), options);
         
-        const { count, rows } = await this.model.findAndCountAll(options);
+        let { count, rows } = await this.model.findAndCountAll(options);
+        
+        if (_.isArray(count)) {
+            count = _.reduce(count, (sum, row) => {
+                return sum + row.count;
+            }, 0); 
+        }
         
         const start = options.offset;
         const end = Math.min(count, options.offset + options.limit);
