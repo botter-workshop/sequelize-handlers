@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { HttpStatusError } = require('./errors');
 const { parse } = require('./parser');
 const { distinct, raw } = require('./transforms');
 
@@ -13,6 +14,7 @@ class ModelHandler {
             async (req, res, next) => {
                 try {
                     const row = await this.Model.create(req.body);
+                    res.status(201);
                     res.send(res.transform(row));
                 } catch (error) {
                     next(error);
@@ -27,6 +29,11 @@ class ModelHandler {
             async (req, res, next) => {
                 try {
                     const row = await this.findOne(req.params);
+                    
+                    if (!row) {
+                        throw new HttpStatusError(404, 'Not Found');
+                    }
+                    
                     res.send(res.transform(row));
                 } catch (error) {
                     next(error);
@@ -64,6 +71,11 @@ class ModelHandler {
             async (req, res, next) => {
                 try {
                     const row = await this.findOne(req.params);
+                    
+                    if (!row) {
+                        throw new HttpStatusError(404, 'Not Found');
+                    }
+                    
                     await row.destroy();
                     res.sendStatus(204);
                 } catch (error) {
@@ -79,6 +91,11 @@ class ModelHandler {
             async (req, res, next) => {
                 try {
                     const row = await this.findOne(req, res, next);
+                    
+                    if (!row) {
+                        throw new HttpStatusError(404, 'Not Found');
+                    }
+                    
                     const updated = await row.updateAttributes(req.body);
                     res.send(res.transform(updated));
                 } catch (error) {

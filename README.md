@@ -122,6 +122,21 @@ A call returning a result set for records with `type` of `new` or `existing`.
 GET /hammers?type=new,existing
 ```
 
+Fields can also now be filtered using Sequelize [operators](http://docs.sequelizejs.com/manual/tutorial/querying.html#operators). 
+These operators allow you to perform more complex filters like below.
+
+```
+// Find hammers where the type is NULL.
+
+GET /hammers?type={"$ne":null}
+```
+
+```
+// Find hammers where the weight is greater than 5 AND less than 10.
+
+GET /hammers?weight={"$and":{$gt":5,"$lt":10}}
+```
+
 #### Sorting
 
 To sort a result set based on one or several fields you can utilize the `sort` parameter. This 
@@ -141,7 +156,7 @@ GET /hammers?sort=id,-name
 Query results are always paged. The `query` handler leverages the `offset` and `limit` 
 parameters to facilitate this.
 
-When the neither of these parameters are explicitly supplied the handler will assume the a default 
+When neither of these parameters are explicitly supplied the handler will assume the default 
 `limit` of `50`.
 
 `offset` is a number indicating the start position in the result set you want to return.

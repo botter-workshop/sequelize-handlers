@@ -17,8 +17,8 @@ function parse(params, { rawAttributes }) {
     ];
     
     options.attributes = parseString(params.fields);
-    options.limit = parseInteger(params.limit);
-    options.offset = parseInteger(params.offset);
+    options.limit = parseInteger(params.limit || 50);
+    options.offset = parseInteger(params.offset || 0);
     options.order = parseSort(params.sort);
     
     _(params)
