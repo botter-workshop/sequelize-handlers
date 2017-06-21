@@ -10,15 +10,8 @@ class ModelHandler {
     }
     
     create() {
-        const self = this;
-        
-        return [
-            raw,
-            handle
-        ];
-        
-        function handle(req, res, next) {
-            self.model
+        const handle = (req, res, next) => {
+            this.model
                 .create(req.body)
                 .then(respond)
                 .catch(next);
@@ -27,19 +20,17 @@ class ModelHandler {
                 res.status(201);
                 res.send(res.transform(row));
             }
-        }
-    }
-    
-    get() {
-        const self = this;
+        };
         
         return [
             raw,
             handle
         ];
-        
-        function handle(req, res, next) {
-            self
+    }
+    
+    get() {
+        const handle = (req, res, next) => {
+            this
                 .findOne(req.params)
                 .then(respond)
                 .catch(next);
@@ -51,19 +42,17 @@ class ModelHandler {
                 
                 res.send(res.transform(row));
             }
-        }
-    }
-    
-    query() {
-        const self = this;
+        };
         
         return [
             raw,
             handle
         ];
-        
-        function handle(req, res, next) {
-            self
+    }
+    
+    query() {
+        const handle = (req, res, next) => {
+            this
                 .findAndCountAll(req.query)
                 .then(respond)
                 .catch(next);
@@ -79,18 +68,17 @@ class ModelHandler {
                 
                 res.send(res.transform(rows));
             }
-        }
+        };
+        
+        return [
+            raw,
+            handle
+        ];
     }
     
     remove() {
-        const self = this;
-        
-        return [
-            handle
-        ];
-        
-        function handle(req, res, next) {
-            self
+        const handle = (req, res, next) => {
+            this
                 .findOne(req.params)
                 .then(destroy)
                 .then(respond)
@@ -107,19 +95,16 @@ class ModelHandler {
             function respond() {
                 res.sendStatus(204);
             }
-        }
+        };
+        
+        return [
+            handle
+        ];
     }
     
     update() {
-        const self = this;
-        
-        return [
-            raw,
-            handle
-        ];
-        
-        function handle(req, res, next) {
-            self
+        const handle = (req, res, next) => {
+            this
                 .findOne(req.params)
                 .then(updateAttributes)
                 .then(respond)
@@ -136,7 +121,12 @@ class ModelHandler {
             function respond(row) {
                 res.send(res.transform(row));
             }
-        }
+        };
+        
+        return [
+            raw,
+            handle
+        ];
     }
     
     findOne(params, options) {
