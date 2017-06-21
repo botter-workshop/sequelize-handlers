@@ -45,7 +45,6 @@ class ModelHandler {
     
     query() {
         return [
-            distinct,
             raw,
             async (req, res, next) => {
                 try {
