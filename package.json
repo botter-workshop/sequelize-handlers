@@ -11,7 +11,7 @@
   ],
   "main": "index.js",
   "engines": {
-    "node": ">= 7.10.0"
+    "node": ">= 6.11.0"
   },
   "repository": {
     "type": "git",

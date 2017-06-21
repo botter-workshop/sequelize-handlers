@@ -12,115 +12,143 @@ class ModelHandler {
     create() {
         return [
             raw,
-            async (req, res, next) => {
-                try {
-                    const row = await this.model.create(req.body);
-                    res.status(201);
-                    res.send(res.transform(row));
-                } catch (error) {
-                    next(error);
-                }
-            }
+            handle
         ];
+        
+        function handle(req, res, next) {
+            this.model
+                .create(req.body)
+                .then(respond)
+                .catch(next);
+            
+            function respond(row) {
+                res.status(201);
+                res.send(res.transform(row));
+            }
+        }
     }
     
     get() {
         return [
             raw,
-            async (req, res, next) => {
-                try {
-                    const row = await this.findOne(req.params);
-                    
-                    if (!row) {
-                        throw new HttpStatusError(404, 'Not Found');
-                    }
-                    
-                    res.send(res.transform(row));
-                } catch (error) {
-                    next(error);
-                }
-            }
+            handle
         ];
+        
+        function handle(req, res, next) {
+            this
+                .findOne(req.params)
+                .then(respond)
+                .catch(next);
+            
+            function respond(row) {
+                if (!row) {
+                    throw new HttpStatusError(404, 'Not Found');
+                }
+                
+                res.send(res.transform(row));
+            }
+        }
     }
     
     query() {
         return [
             raw,
-            async (req, res, next) => {
-                try {
-                    const { rows, start, end, count } = await this.findAndCountAll(req.query);
-                    
-                    res.set('Content-Range', `${start}-${end}/${count}`);
-                    
-                    if (count > end) {
-                        res.status(206);
-                    } else {
-                        res.status(200);
-                    }
-                    
-                    res.send(res.transform(rows));
-                } catch (error) {
-                    next(error);   
-                }
-            }
+            handle
         ];
+        
+        function handle(req, res, next) {
+            this
+                .findAndCountAll(req.query)
+                .then(respond)
+                .catch(next);
+            
+            function respond({ rows, start, end, count }) {
+                res.set('Content-Range', `${start}-${end}/${count}`);
+                
+                if (count > end) {
+                    res.status(206);
+                } else {
+                    res.status(200);
+                }
+                
+                res.send(res.transform(rows));
+            }
+        }
     }
     
     remove() {
         return [
-            async (req, res, next) => {
-                try {
-                    const row = await this.findOne(req.params);
-                    
-                    if (!row) {
-                        throw new HttpStatusError(404, 'Not Found');
-                    }
-                    
-                    await row.destroy();
-                    res.sendStatus(204);
-                } catch (error) {
-                    next(error);
-                }
-            }
+            handle
         ];
+        
+        function handle(req, res, next) {
+            this
+                .findOne(req.params)
+                .then(destroy)
+                .then(respond)
+                .catch(next);
+            
+            function destroy(row) {
+                if (!row) {
+                    throw new HttpStatusError(404, 'Not Found');
+                }
+                
+                return row.destroy();
+            }
+            
+            function respond() {
+                res.sendStatus(204);
+            }
+        }
     }
     
     update() {
         return [
             raw,
-            async (req, res, next) => {
-                try {
-                    const row = await this.findOne(req.params);
-                    
-                    if (!row) {
-                        throw new HttpStatusError(404, 'Not Found');
-                    }
-                    
-                    const updated = await row.updateAttributes(req.body);
-                    res.send(res.transform(updated));
-                } catch (error) {
-                    next(error);
-                }
-            }
+            handle
         ];
+        
+        function handle(req, res, next) {
+            this
+                .findOne(req.params)
+                .then(updateAttributes)
+                .then(respond)
+                .catch(next);
+                
+            function updateAttributes(row) {
+                if (!row) {
+                    throw new HttpStatusError(404, 'Not Found');
+                }
+                
+                return row.updateAttributes(req.body);
+            }
+            
+            function respond(row) {
+                res.send(res.transform(row));
+            }
+        }
     }
     
-    async findOne(params, options) {
+    findOne(params, options) {
         options = _.merge(parse(params, this.model), options);
 
-        return await this.model.findOne(options);
+        return this.model.findOne(options);
     }
     
-    async findAndCountAll(params, options) {
+    findAndCountAll(params, options) {
         params = _.defaults(params, this.defaults);
         options = _.merge(parse(params, this.model), options);
         
-        let { count, rows } = await this.model.findAndCountAll(options);
+        return this.model
+            .findAndCountAll(options)
+            .then(extract);
+            
+        function extract({ count, rows }) {
+            const start = options.offset;
+            const end = Math.min(count, (options.offset + options.limit) || count);
         
-        const start = options.offset;
-        const end = Math.min(count, (options.offset + options.limit) || count);
-        
-        return { rows, start, end, count };
+            return { rows, start, end, count };
+        }
     }
 }
 
