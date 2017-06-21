@@ -136,8 +136,12 @@ class ModelHandler {
     }
     
     findAndCountAll(params, options) {
-        params = _.defaults(params, this.defaults);
-        options = _.merge(parse(params, this.model), options);
+        let parsed = parse(params, this.model);
+        
+        options = _(parsed)
+            .defaults(this.defaults)
+            .merge(options)
+            .value();
         
         return this.model
             .findAndCountAll(options)

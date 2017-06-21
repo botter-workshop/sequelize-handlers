@@ -54,7 +54,7 @@ function parseJson(value) {
 function parseInteger(value) {
     value = parseInt(value);
     
-    if (_.isNaN(value) || value < 0) {
+    if (_.isNaN(value)) {
         value = undefined;
     }
     
