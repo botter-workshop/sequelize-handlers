@@ -10,13 +10,15 @@ class ModelHandler {
     }
     
     create() {
+        const self = this;
+        
         return [
             raw,
             handle
         ];
         
         function handle(req, res, next) {
-            this.model
+            self.model
                 .create(req.body)
                 .then(respond)
                 .catch(next);
@@ -29,13 +31,15 @@ class ModelHandler {
     }
     
     get() {
+        const self = this;
+        
         return [
             raw,
             handle
         ];
         
         function handle(req, res, next) {
-            this
+            self
                 .findOne(req.params)
                 .then(respond)
                 .catch(next);
@@ -51,13 +55,15 @@ class ModelHandler {
     }
     
     query() {
+        const self = this;
+        
         return [
             raw,
             handle
         ];
         
         function handle(req, res, next) {
-            this
+            self
                 .findAndCountAll(req.query)
                 .then(respond)
                 .catch(next);
@@ -77,12 +83,14 @@ class ModelHandler {
     }
     
     remove() {
+        const self = this;
+        
         return [
             handle
         ];
         
         function handle(req, res, next) {
-            this
+            self
                 .findOne(req.params)
                 .then(destroy)
                 .then(respond)
@@ -103,13 +111,15 @@ class ModelHandler {
     }
     
     update() {
+        const self = this;
+        
         return [
             raw,
             handle
         ];
         
         function handle(req, res, next) {
-            this
+            self
                 .findOne(req.params)
                 .then(updateAttributes)
                 .then(respond)
