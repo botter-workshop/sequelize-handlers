@@ -58,7 +58,9 @@ class ModelHandler {
                 .catch(next);
 
             function respond({ rows, start, end, count }) {
-                res.set('Content-Range', `${start}-${end}/${count}`);
+                // res.set('Content-Range', `${start}-${end}/${count}`);
+                res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
+                res.setHeader('X-Total-Count', count);
 
                 if (count > end) {
                     res.status(206);
@@ -67,8 +69,7 @@ class ModelHandler {
                 }
 
                 res.send(res.transform(rows));
-                res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
-                res.setHeader('X-Total-Count', count);
+
             }
         };
 
