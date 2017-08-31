@@ -2,6 +2,7 @@ const _ = require('lodash');
 const { HttpStatusError } = require('./errors');
 const { parse } = require('./parser');
 const { distinct, raw } = require('./transforms');
+const uuidv1 = require('uuid/v1');
 
 class ModelHandler {
     constructor(model, defaults = { limit: 50, offset: 0 }) {
@@ -11,6 +12,7 @@ class ModelHandler {
 
     create() {
         const handle = (req, res, next) => {
+          req.body.id = uuidv1();
             this.model
                 .create(req.body)
                 .then(respond)
