@@ -83,9 +83,9 @@ function parseSort(value) {
 
 function translateKeys(object) {
   // Transform start and end into offset(start) and limit
- +  if( object['_start'] && object['_end'] ) {
- +    object['_end'] = object['_end'] - object['_start'];
- +  }
+  if( object['_start'] && object['_end'] ) {
+     object['_end'] = object['_end'] - object['_start'];
+   }
   // Translate keys to be used as this package expects
   let str = JSON.stringify(object);
   str = str.replace('_sort', 'sort');
