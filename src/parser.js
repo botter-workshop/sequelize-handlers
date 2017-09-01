@@ -27,7 +27,7 @@ function parse(params, { rawAttributes }) {
     _(params)
         .omit(keywords)
         .forOwn((value, key) => {
-            if(key.indexOf('.')){
+            if(key.indexOf('.') !== -1){
               key = '$' + key + '$';
               options.where[key] = parseJson(value);
             }else if(rawAttributes.hasOwnProperty(key)){
@@ -50,7 +50,7 @@ function parseIncludes(includes) {
     if (includes) {
         includes = includes.split(',');
         for(let i in includes){
-          if(!includes[i].indexOf('.')){
+          if(includes[i].indexOf('.') === - 1){
             continue;
           }
           includeArr = includes[i].split('.')
