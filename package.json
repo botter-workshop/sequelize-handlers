@@ -15,15 +15,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/botter-workshop/sequelize-handlers.git"
+    "url": "git+https://github.com/sussol/sequelize-handlers.git"
   },
   "author": "Ben Hanna <benpaulhanna@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/botter-workshop/sequelize-handlers/issues"
+    "url": "https://github.com/sussol/sequelize-handlers/issues"
   },
-  "homepage": "https://github.com/botter-workshop/sequelize-handlers#readme",
+  "homepage": "https://github.com/sussol/sequelize-handlers#readme",
   "dependencies": {
-    "lodash": "^4.13.1"
+    "babel": "^6.23.0",
+    "lodash": "^4.13.1",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
   }
 }
