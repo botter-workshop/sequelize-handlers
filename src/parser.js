@@ -49,22 +49,27 @@ function parseString(value) {
 function parseIncludes(includes) {
     let returnObj;
     if (includes) {
-      returnObj = {};
+      returnObj = [];
+      let baseObj = {};
       let includesArr = includes.split(',');
       for(let i in includesArr){
         if(includesArr[i].indexOf('.') === - 1){
-          if(!includes.hasOwnProperty(includesArr[i])){
-            returnObj[includesArr[i]] = {};
+          if(!baseObj.hasOwnProperty(includesArr[i])){
+            returnObj.push({model:includesArr[i], include:[]});
+            baseObj[includesArr[i]] = {index: returnObj.length - 1};
           }
           continue;
         }
         includeArr = includesArr[i].split('.')
-        let includePtr = returnObj;
+        let basePtr = baseObj;
+        let returnPtr = returnObj.include;
         for(let j in includeArr){
-          if(!includePtr.hasOwnProperty(includeArr[j])){
-            includePtr[includeArr[j]] = {};
+          if(!basePtr.hasOwnProperty(includeArr[j])){
+            returnPtr.push({model:includeArr[j], include:[]});
+            basePtr[includeArr[j]] = {index: returnPtr.length - 1};
           }
-          includePtr = includePtr[includeArr[j]];
+          basePtr = basePtr[includeArr[j]];
+          returnPtr = returnPtr.include[basePtr[includeArr[j]]].include;
         }
       }
     }
