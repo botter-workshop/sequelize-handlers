@@ -55,7 +55,7 @@ function parseIncludes(includes) {
       for(let i in includesArr){
         if(includesArr[i].indexOf('.') === - 1){
           if(!baseObj.hasOwnProperty(includesArr[i])){
-            returnObj.push({model:includesArr[i], include:[]});
+            returnObj.push({association:includesArr[i], include:[]});
             baseObj[includesArr[i]] = {index: returnObj.length - 1};
           }
           continue;
@@ -65,7 +65,7 @@ function parseIncludes(includes) {
         let returnPtr = returnObj;
         for(let j in includeArr){
           if(!basePtr.hasOwnProperty(includeArr[j])){
-            returnPtr.push({model:includeArr[j], include:[]});
+            returnPtr.push({association:includeArr[j], include:[]});
             basePtr[includeArr[j]] = {index: returnPtr.length - 1};
           }
           basePtr = basePtr[includeArr[j]];
