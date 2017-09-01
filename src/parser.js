@@ -27,9 +27,7 @@ function parse(params, { rawAttributes }) {
     _(params)
         .omit(keywords)
         .forOwn((value, key) => {
-            if (rawAttributes.hasOwnProperty(key)) {
-                options.where[key] = parseJson(value);
-            }
+            options.where[key] = parseJson(value);
         });
 
     return options;
