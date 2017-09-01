@@ -74,8 +74,8 @@ class ModelHandler {
         return row.destroy();
       }
 
-      function respond() {
-        res.sendStatus(204);
+      function respond(row) {
+        res.send(row.dataValues);
       }
     };
 
