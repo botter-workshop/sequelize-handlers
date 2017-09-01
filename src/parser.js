@@ -62,15 +62,13 @@ function parseIncludes(includes) {
         }
         includeArr = includesArr[i].split('.')
         let basePtr = baseObj;
-        let returnPtr = returnObj.include;
+        let returnPtr = returnObj;
         for(let j in includeArr){
           if(!basePtr.hasOwnProperty(includeArr[j])){
             returnPtr.push({model:includeArr[j], include:[]});
             basePtr[includeArr[j]] = {index: returnPtr.length - 1};
           }
           basePtr = basePtr[includeArr[j]];
-          console.log(returnPtr);
-          console.log(basePtr);
           returnPtr = returnPtr[basePtr.index].include;
         }
       }
