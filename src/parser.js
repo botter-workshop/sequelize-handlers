@@ -27,6 +27,9 @@ function parse(params, { rawAttributes }) {
     _(params)
         .omit(keywords)
         .forOwn((value, key) => {
+            if(key.indexOf('.')){
+              key = '$' + key + '$';
+            }
             options.where[key] = parseJson(value);
         });
 
