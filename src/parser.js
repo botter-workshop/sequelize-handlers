@@ -18,7 +18,7 @@ function parse(params, { rawAttributes }) {
         'sort'
     ];
 
-    options.include = parseString(params.includes);
+    options.include = parseIncludes(params.includes);
     options.attributes = parseString(params.fields);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
@@ -29,8 +29,10 @@ function parse(params, { rawAttributes }) {
         .forOwn((value, key) => {
             if(key.indexOf('.')){
               key = '$' + key + '$';
+              options.where[key] = parseJson(value);
+            }else if(rawAttributes.hasOwnProperty(key)){
+              options.where[key] = parseJson(value);
             }
-            options.where[key] = parseJson(value);
         });
 
     return options;
@@ -42,6 +44,26 @@ function parseString(value) {
     }
 
     return value;
+}
+
+function parseIncludes(includes) {
+    if (includes) {
+        includes = includes.split(',');
+        for(let i in includes){
+          if(includes[i].indexOf('.')){
+            includeArr = includes[i].split('.')
+            let includeObj = {};
+            let includePtr = includeObj;
+            for(let j in includeArr){
+              includePtr[includeArr[j]] = {};
+              includePtr = includePtr[includeArr[j]];
+            }
+            includes[i] = includeObj;
+          }
+        }
+    }
+
+    return includes;
 }
 
 function parseJson(value) {
