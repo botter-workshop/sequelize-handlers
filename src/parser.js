@@ -48,19 +48,20 @@ function parseString(value) {
 
 function parseIncludes(includes) {
     if (includes) {
-        includes = includes.split(',');
-        for(let i in includes){
+        includesArr = includes.split(',');
+        includes = {};
+        for(let i in includesArr){
           if(includes[i].indexOf('.') === - 1){
-            continue;
+            includes[includesArr[i]] = {}
           }
           includeArr = includes[i].split('.')
-          let includeObj = {};
-          let includePtr = includeObj;
+          let includePtr = includes;
           for(let j in includeArr){
-            includePtr[includeArr[j]] = {};
+            if(includePtr[includeArr[j]].indexOf('.') === - 1){
+              includePtr[includeArr[j]] = {};
+            }
             includePtr = includePtr[includeArr[j]];
           }
-          includes[i] = includeObj;
         }
     }
     console.log(includes);
