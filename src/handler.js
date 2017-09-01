@@ -3,6 +3,7 @@ const { HttpStatusError } = require('./errors');
 const { parse } = require('./parser');
 const { distinct, raw } = require('./transforms');
 import uuidv1 from 'uuid/v1';
+const request = require('request');
 
 class ModelHandler {
   constructor(model, defaults = { limit: 50, offset: 0 }) {
@@ -14,6 +15,38 @@ class ModelHandler {
     const handle = (req, res, next) => {
       req.body.id = uuidv1();
       this.model.create(req.body).then(respond).catch(next);
+
+      function respond(row) {
+        res.status(201);
+        res.send(res.transform(row));
+      }
+    };
+
+    return [raw, handle];
+  }
+
+  createUser() {
+    const handle = (req, res, next) => {
+      req.body.id = uuidv1();
+      //req.body.password = uuidv1();
+      let userPwd = req.body.password;
+      let dbPwd = '';
+      let dbSalt = '';
+
+      var url = 'https://moneymob.msupply.org/crypto?password=' + userPwd;
+
+      request(url, (error, response, body) => {
+        if (!error && response.statusCode === 200) {
+          const pwdResponse = JSON.parse(body);
+          req.body.password = pwdResponse.encrypted;
+          req.body.salt = pwdResponse.salt;
+          this.model.create(req.body).then(respond).catch(next);
+        } else {
+          console.log('Got an error: ', error, ', status code: ', response.statusCode);
+        }
+      });
+
+      //req.body.salt = 'saltyvolty';
 
       function respond(row) {
         res.status(201);
