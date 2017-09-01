@@ -47,25 +47,29 @@ function parseString(value) {
 }
 
 function parseIncludes(includes) {
+    let returnObj;
     if (includes) {
-        includesArr = includes.split(',');
-        includes = {};
-        for(let i in includesArr){
-          if(includes[i].indexOf('.') === - 1){
-            includes[includesArr[i]] = {}
+      returnObj = {};
+      let includesArr = includes.split(',');
+      for(let i in includesArr){
+        if(includesArr[i].indexOf('.') === - 1){
+          if(!includes.hasOwnProperty(includesArr[i])){
+            returnObj[includesArr[i]] = {};
           }
-          includeArr = includes[i].split('.')
-          let includePtr = includes;
-          for(let j in includeArr){
-            if(includePtr[includeArr[j]].indexOf('.') === - 1){
-              includePtr[includeArr[j]] = {};
-            }
-            includePtr = includePtr[includeArr[j]];
-          }
+          continue;
         }
+        includeArr = includesArr[i].split('.')
+        let includePtr = returnObj;
+        for(let j in includeArr){
+          if(!includePtr.hasOwnProperty(includeArr[j])){
+            includePtr[includeArr[j]] = {};
+          }
+          includePtr = includePtr[includeArr[j]];
+        }
+      }
     }
-    console.log(includes);
-    return includes;
+    console.log(returnObj);
+    return returnObj;
 }
 
 function parseJson(value) {
