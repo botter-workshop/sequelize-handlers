@@ -69,6 +69,7 @@ function parseIncludes(includes) {
             basePtr[includeArr[j]] = {index: returnPtr.length - 1};
           }
           basePtr = basePtr[includeArr[j]];
+          console.log(basePtr[includeArr[j]].index);
           returnPtr = returnPtr.include[basePtr[includeArr[j]].index].include;
         }
       }
