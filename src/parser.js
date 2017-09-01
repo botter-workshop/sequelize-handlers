@@ -18,7 +18,7 @@ function parse(params, { rawAttributes }) {
         'sort'
     ];
 
-    options.includes = parseString(params.includes);
+    options.include = parseString(params.includes);
     options.attributes = parseString(params.fields);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
