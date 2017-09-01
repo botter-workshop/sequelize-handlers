@@ -50,19 +50,20 @@ function parseIncludes(includes) {
     if (includes) {
         includes = includes.split(',');
         for(let i in includes){
-          if(includes[i].indexOf('.')){
-            includeArr = includes[i].split('.')
-            let includeObj = {};
-            let includePtr = includeObj;
-            for(let j in includeArr){
-              includePtr[includeArr[j]] = {};
-              includePtr = includePtr[includeArr[j]];
-            }
-            includes[i] = includeObj;
+          if(!includes[i].indexOf('.')){
+            continue;
           }
+          includeArr = includes[i].split('.')
+          let includeObj = {};
+          let includePtr = includeObj;
+          for(let j in includeArr){
+            includePtr[includeArr[j]] = {};
+            includePtr = includePtr[includeArr[j]];
+          }
+          includes[i] = includeObj;
         }
     }
-
+    console.log(includes);
     return includes;
 }
 
