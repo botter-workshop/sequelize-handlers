@@ -68,8 +68,9 @@ function parseIncludes(includes) {
             returnPtr.push({model:includeArr[j], include:[]});
             basePtr[includeArr[j]] = {index: returnPtr.length - 1};
           }
-          returnPtr = returnPtr.include[basePtr[includeArr[j]].index].include;
           basePtr = basePtr[includeArr[j]];
+          returnPtr = returnPtr[basePtr.index].include;
+
         }
       }
     }
