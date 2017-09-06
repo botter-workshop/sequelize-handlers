@@ -73,7 +73,6 @@ function parseIncludes(includes) {
         }
       }
     }
-    console.log(returnObj);
     return returnObj;
 }
 
