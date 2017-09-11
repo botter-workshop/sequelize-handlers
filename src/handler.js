@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const { HttpStatusError } = require('./errors');
 const { parse } = require('./parser');
-const { distinct, raw } = require('./transforms');
+const { raw } = require('./transforms');
 
 class ModelHandler {
     constructor(model, defaults = { limit: 50, offset: 0 }) {
@@ -31,7 +31,7 @@ class ModelHandler {
     get() {
         const handle = (req, res, next) => {
             this
-                .findOne(req.params)
+                .findOne(req.params, req.options)
                 .then(respond)
                 .catch(next);
             
@@ -53,7 +53,7 @@ class ModelHandler {
     query() {
         const handle = (req, res, next) => {
             this
-                .findAndCountAll(req.query)
+                .findAndCountAll(req.query, req.options)
                 .then(respond)
                 .catch(next);
             
