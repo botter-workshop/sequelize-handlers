@@ -17,8 +17,7 @@ function parse(params, { rawAttributes }) {
         'offset',
         'sort'
     ];
-    options.include = parseIncludes(params.includes);
-    options.require = (!params.require || parseString(params.require).toLowerCase() === 'true');
+    options.include = parseIncludes(params.includes, (!params.require || parseString(params.require).toLowerCase() === 'true'));
     options.attributes = parseString(params.fields);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
@@ -46,7 +45,7 @@ function parseString(value) {
     return value;
 }
 
-function parseIncludes(includes) {
+function parseIncludes(includes, required) {
     let returnObj;
     if (includes) {
       returnObj = [];
@@ -55,7 +54,7 @@ function parseIncludes(includes) {
       for(let i in includesArr){
         if(includesArr[i].indexOf('.') === - 1){
           if(!baseObj.hasOwnProperty(includesArr[i])){
-            returnObj.push({association:includesArr[i], include:[]});
+            returnObj.push({association:includesArr[i], required: required, include:[]});
             baseObj[includesArr[i]] = {index: returnObj.length - 1};
           }
           continue;
@@ -65,7 +64,7 @@ function parseIncludes(includes) {
         let returnPtr = returnObj;
         for(let j in includeArr){
           if(!basePtr.hasOwnProperty(includeArr[j])){
-            returnPtr.push({association:includeArr[j], include:[]});
+            returnPtr.push({association:includeArr[j], required: required, include:[]});
             basePtr[includeArr[j]] = {index: returnPtr.length - 1};
           }
           basePtr = basePtr[includeArr[j]];
