@@ -7,29 +7,34 @@ module.exports = {
 
 function parse(params, { rawAttributes }) {
     const options = {
-        where: {}    
+        where: {}
     };
-    
+
     const keywords = [
+        'includes',
+        'requireIncludes',
         'fields',
         'limit',
         'offset',
         'sort'
     ];
-    
+    options.include = parseIncludes(params.includes, (!params.requireIncludes || params.requireIncludes === 'true'));
     options.attributes = parseString(params.fields);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
     options.order = parseSort(params.sort);
-    
+
     _(params)
         .omit(keywords)
         .forOwn((value, key) => {
-            if (rawAttributes.hasOwnProperty(key)) {
-                options.where[key] = parseJson(value);
+            if(key.indexOf('.') !== -1){
+              key = '$' + key + '$';
+              options.where[key] = parseJson(value);
+            }else if(rawAttributes.hasOwnProperty(key)){
+              options.where[key] = parseJson(value);
             }
         });
-    
+
     return options;
 };
 
@@ -37,8 +42,38 @@ function parseString(value) {
     if (value) {
         value = value.split(',');
     }
-    
+
     return value;
+}
+
+function parseIncludes(includes, required) {
+    let returnObj;
+    if (includes) {
+      returnObj = [];
+      let baseObj = {};
+      let includesArr = includes.split(',');
+      for(let i in includesArr){
+        if(includesArr[i].indexOf('.') === - 1){
+          if(!baseObj.hasOwnProperty(includesArr[i])){
+            returnObj.push({association:includesArr[i], required: required, include:[]});
+            baseObj[includesArr[i]] = {index: returnObj.length - 1};
+          }
+          continue;
+        }
+        includeArr = includesArr[i].split('.')
+        let basePtr = baseObj;
+        let returnPtr = returnObj;
+        for(let j in includeArr){
+          if(!basePtr.hasOwnProperty(includeArr[j])){
+            returnPtr.push({association:includeArr[j], required: required, include:[]});
+            basePtr[includeArr[j]] = {index: returnPtr.length - 1};
+          }
+          basePtr = basePtr[includeArr[j]];
+          returnPtr = returnPtr[basePtr.index].include;
+        }
+      }
+    }
+    return returnObj;
 }
 
 function parseJson(value) {
@@ -47,26 +82,26 @@ function parseJson(value) {
     } catch (error) {
         value = parseString(value);
     }
-    
+
     return value;
 }
 
 function parseInteger(value) {
     value = parseInt(value);
-    
+
     if (_.isNaN(value)) {
         value = undefined;
     }
-    
+
     return value;
 }
 
 function parseSort(value) {
     let sort = undefined;
-        
+
     if (value) {
         const keys = parseString(value);
-        
+
         sort = _.map(keys, (key) => {
             if (key.indexOf('-') === 0) {
                 return [key.substr(1), 'DESC'];
@@ -75,6 +110,6 @@ function parseSort(value) {
             }
         });
     }
-    
+
     return sort;
 }
