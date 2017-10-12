@@ -12,12 +12,13 @@ function parse(params, { rawAttributes }) {
 
     const keywords = [
         'includes',
+        'requireIncludes',
         'fields',
         'limit',
         'offset',
         'sort'
     ];
-    options.include = parseIncludes(params.includes, (!params.require || parseString(params.require).toLowerCase() === 'true'));
+    options.include = parseIncludes(params.includes, (!params.requireIncludes || parseString(params.requireIncludes).toLowerCase() === 'true'));
     options.attributes = parseString(params.fields);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
