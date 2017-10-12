@@ -19,6 +19,7 @@ function parse(params, { rawAttributes }) {
     ];
 
     options.include = parseIncludes(params.includes);
+    options.require = (parseString(params.require) === 'true')
     options.attributes = parseString(params.fields);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
