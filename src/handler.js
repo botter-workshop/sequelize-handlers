@@ -11,7 +11,7 @@ class ModelHandler {
     
     create() {
         const handle = (req, res, next) => {
-            this.model
+            return this.model
                 .create(req.body)
                 .then(respond)
                 .catch(next);
@@ -30,8 +30,8 @@ class ModelHandler {
     
     get() {
         const handle = (req, res, next) => {
-            this
-                .findOne(req.params)
+            return this
+                .findOne(Object.assign({},req.query,req.params))
                 .then(respond)
                 .catch(next);
             
@@ -52,7 +52,7 @@ class ModelHandler {
     
     query() {
         const handle = (req, res, next) => {
-            this
+            return this
                 .findAndCountAll(req.query)
                 .then(respond)
                 .catch(next);
@@ -78,7 +78,7 @@ class ModelHandler {
     
     remove() {
         const handle = (req, res, next) => {
-            this
+            return this
                 .findOne(req.params)
                 .then(destroy)
                 .then(respond)
@@ -104,8 +104,8 @@ class ModelHandler {
     
     update() {
         const handle = (req, res, next) => {
-            this
-                .findOne(req.params)
+            return this
+                .findOne(Object.assign({},req.query,req.params))
                 .then(updateAttributes)
                 .then(respond)
                 .catch(next);
