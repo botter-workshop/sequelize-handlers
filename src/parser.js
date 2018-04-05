@@ -18,19 +18,28 @@ function parse(params, { rawAttributes }) {
         'offset',
         'sort'
     ];
-    options.include = parseIncludes(params.includes, (!params.requireIncludes || params.requireIncludes === 'true'));
+    options.include = parseIncludes(params.includes, (params.requireIncludes?params.requireIncludes === 'true':false));
     options.attributes = parseString(params.fields);
     options.limit = parseInteger(params.limit);
     options.offset = parseInteger(params.offset);
     options.order = parseSort(params.sort);
+    options.distinct = (options.include && options.include.length > 0);
 
     _(params)
         .omit(keywords)
         .forOwn((value, key) => {
-            if(key.indexOf('.') !== -1){
-              key = '$' + key + '$';
-              options.where[key] = parseJson(value);
-            }else if(rawAttributes.hasOwnProperty(key)){
+
+            // field=~value is shorthand for field={"$like": "%value%"}
+            if (typeof value === 'string' && value.startsWith('~')) {
+              value = `{"$like":"%${value.replace('~','')}%"}`;
+            }
+
+            // field1,field2=value will produce an {"$or": []} block
+            if (key.includes(',')) {
+              options.where['$or'] = buildOr(key, value);
+            } else if (key.indexOf('.') !== -1){
+              buildDotWalkFilter(key, value, options);
+            } else if (rawAttributes.hasOwnProperty(key)){
               options.where[key] = parseJson(value);
             }
         });
@@ -46,6 +55,9 @@ function parseString(value) {
     return value;
 }
 
+/*
+  Modifited to have duplicating: false to fix has-many relationship queries and also to generate a default where so we can appropriately add where condtions to lower level objects.
+*/
 function parseIncludes(includes, required) {
     let returnObj;
     if (includes) {
@@ -55,7 +67,7 @@ function parseIncludes(includes, required) {
       for(let i in includesArr){
         if(includesArr[i].indexOf('.') === - 1){
           if(!baseObj.hasOwnProperty(includesArr[i])){
-            returnObj.push({association:includesArr[i], required: required, include:[]});
+            returnObj.push({association:includesArr[i], duplicating: false, required: required, include:[], where:{}});
             baseObj[includesArr[i]] = {index: returnObj.length - 1};
           }
           continue;
@@ -65,7 +77,7 @@ function parseIncludes(includes, required) {
         let returnPtr = returnObj;
         for(let j in includeArr){
           if(!basePtr.hasOwnProperty(includeArr[j])){
-            returnPtr.push({association:includeArr[j], required: required, include:[]});
+            returnPtr.push({association:includeArr[j], duplicating: false, required: required, include:[], where:{}});
             basePtr[includeArr[j]] = {index: returnPtr.length - 1};
           }
           basePtr = basePtr[includeArr[j]];
@@ -112,4 +124,61 @@ function parseSort(value) {
     }
 
     return sort;
+}
+
+/*
+    This mutates the options object to place the dot walked key in the correct where conditional and add the appropriate filter value.  This fixes has-many relationship filters and also allows for infinate level filtering on a query
+*/
+function buildDotWalkFilter(key, value, options){
+  let keyParts = key.split('.');
+  for(let include of options.include){
+    if(include.association === keyParts[0]){
+      let wherePtr = include.where;
+      let incPtr = include;
+      for(let kIdx = 1; kIdx < (keyParts.length - 1); kIdx++){
+        for(let inc of incPtr.include){
+          if(inc.association === keyParts[kIdx]){
+            wherePtr = inc.where;
+            incPtr = inc;
+          }
+        }
+      }
+      wherePtr[keyParts[(keyParts.length - 1)]] = parseJson(value);
+    }
+  }
+}
+
+/**
+ * Build `or` query block based on comma separated list of fields
+ *
+ * @example
+ * // returns
+ * // { '$or' :
+ * //    [
+ * //     { field1: 'partial' },
+ * //     { field2: 'partial' },
+ * //     { '$RelatedList.field3$': 'partial' }
+ * //   ]
+ * // }
+ * parseFilter('field1,field2,RelatedList.field3', 'value')
+ *
+ * @param {string} fields - Comma delimited list of fields to search
+ * @param {string} value - The string to search for
+ *
+ * @returns {object} Returns a sequelize 'or' subquery
+ */
+function buildOr(fields, value) {
+  let or = [];
+  let fieldKeys = fields.split(',');
+
+  for(let orField of fieldKeys) {
+    let fieldKey = orField.includes('.') ? `$${orField}$` : orField;
+    let parsed = parseJson(value);
+    if(Array.isArray(parsed)){
+        parsed = parsed[0];
+    }
+    or.push({[fieldKey]: parsed});
+  }
+
+  return or;
 }
