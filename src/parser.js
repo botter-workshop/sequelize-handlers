@@ -2,7 +2,11 @@ const _ = require('lodash');
 const { HttpStatusError } = require('./errors');
 
 module.exports = {
-    parse
+    parse,
+    parseString,
+    parseInteger,
+    parseJson,
+    parseSort
 };
 
 function parse(params, { rawAttributes }) {
