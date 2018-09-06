@@ -1,6 +1,6 @@
 const assert = require('assert');
 const request = require('supertest');
-const { app } = require('./helper');
+const { app } = require('./app');
 
 describe('handlers', function () {
     describe('get', function () {

@@ -1,7 +1,7 @@
 const assert = require('assert');
 
 const { parse, parseString, parseInteger, parseJson, parseSort } = require('../src/parser');
-const { User } = require('./helper');
+const { User } = require('./app');
 
 describe('parser', function () {
     describe('parse', function () {
