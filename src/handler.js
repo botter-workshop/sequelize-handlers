@@ -149,7 +149,7 @@ class ModelHandler {
             
         function extract({ count, rows }) {
             const start = options.offset;
-            const end = Math.min(count, (options.offset + options.limit) || count);
+            const end = Math.min(count, options.offset + options.limit);
         
             return { rows, start, end, count };
         }
