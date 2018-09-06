@@ -13,7 +13,7 @@ describe('handlers', function () {
                     expect(res.statusCode).to.equal(200);
                     expect(res.body.id).to.equal(1);
                     expect(res.body.username).to.equal('test');
-                    expect(res.body.birthday).to.equal('1999-12-31T05:00:00.000Z');
+                    expect(res.body.birthday).to.equal('1999-12-31T00:00:00.000Z');
                     done();
                 });
         });
@@ -34,7 +34,7 @@ describe('handlers', function () {
                             expect(res.statusCode).to.equal(200);
                             expect(res.body.id).to.equal(2);
                             expect(res.body.username).to.equal('othertest');
-                            expect(res.body.birthday).to.equal('2000-01-01T05:00:00.000Z');
+                            expect(res.body.birthday).to.equal('2000-01-01T00:00:00.000Z');
                             done();
                         });
                 });
@@ -142,7 +142,7 @@ describe('handlers', function () {
                             expect(res.statusCode).to.equal(200);
                             expect(res.body.id).to.equal(2);
                             expect(res.body.username).to.equal('changed');
-                            expect(res.body.birthday).to.equal('2000-01-01T05:00:00.000Z');
+                            expect(res.body.birthday).to.equal('2000-01-01T00:00:00.000Z');
                             done();
                         });
                 });
