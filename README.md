@@ -1,4 +1,8 @@
 # sequelize-handlers
+
+[![Build Status](https://travis-ci.org/botter-workshop/sequelize-handlers.svg?branch=master)](https://travis-ci.org/botter-workshop/sequelize-handlers)
+[![Coverage Status](https://coveralls.io/repos/github/botter-workshop/sequelize-handlers/badge.svg?branch=master)](https://coveralls.io/github/botter-workshop/sequelize-handlers?branch=master)
+
 A module that simplifies adding RESTful Express handlers for Sequelize models.
 
 ## Prerequisites
