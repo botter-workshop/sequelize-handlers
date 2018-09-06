@@ -3,8 +3,8 @@ var { app } = require('./helper');
 var chai = require('chai');
 expect = chai.expect;
 
-describe('Handlers', function() {
-    describe('Get', function() {
+describe('handlers', function () {
+    describe('get', function () {
         it('should respond with correct json', function(done) {
             request(app)
                 .get('/user/1')
@@ -19,7 +19,7 @@ describe('Handlers', function() {
         });
     });
 
-    describe('Create', function() {
+    describe('create', function() {
         it('should create a new instance', function(done) {
             request(app)
                 .post('/user')
@@ -41,7 +41,7 @@ describe('Handlers', function() {
         });
     });
 
-    describe('Query', function() {
+    describe('query', function() {
         it('should respond with json', function(done) {
             request(app)
                 .get('/user')
@@ -127,7 +127,7 @@ describe('Handlers', function() {
         });
     });
 
-    describe('Update', function() {
+    describe('update', function() {
         it('should update an existing instance', function(done) {
             request(app)
                 .put('/user/2')
@@ -149,7 +149,7 @@ describe('Handlers', function() {
         });
     });
 
-    describe('Remove', function() {
+    describe('remove', function() {
         it('should delete an instance', function(done) {
             request(app)
                 .delete('/user/2')
@@ -167,5 +167,4 @@ describe('Handlers', function() {
                 });
         });
     });
-
 });

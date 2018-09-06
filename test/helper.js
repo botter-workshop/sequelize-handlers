@@ -8,10 +8,7 @@ var app = express();
 
 app.use(bodyParser.json());
 
-const sequelize = new Sequelize('shtest', '', '', {
-  dialect: 'postgres',
-  logging: false
-});
+const sequelize = new Sequelize('sqlite://:memory:');
 
 const ModelHandler = require('../src/handler');
 
@@ -29,16 +26,22 @@ app.get('/user/:id', testHandler.get());
 app.put('/user/:id', testHandler.update());
 app.delete('/user/:id', testHandler.remove());
 
-before(function (done) {
-	User.sync({force: true}).then(() =>
-	    User.create({username: "test", birthday:"12/31/99"})
-	).then(() => done())
+before(function () {
+	return User
+		.sync({ force: true })
+		.then(() => {
+			const user = {
+				username: 'test',
+				birthday: '12/31/99'
+			};
+			
+	    	return User.create(user);
+		});
 });
-//beforeEach();
 
-// teardown
-after(() => sequelize.close());
-//afterEach();
+after(function () { 
+	return sequelize.close();
+});
 
 module.exports = {
     app,
