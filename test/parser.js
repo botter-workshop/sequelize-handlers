@@ -1,22 +1,22 @@
-const { parse, parseString, parseInteger, parseJson, parseSort } = require('../src/parser');
+const assert = require('assert');
 const Sequelize = require('sequelize');
 
-var { User } = require('./helper');
+const { parse, parseString, parseInteger, parseJson, parseSort } = require('../src/parser');
+const { User } = require('./helper');
 
-var chai = require('chai');
-expect = chai.expect;
-
-describe('Parser', function() {
-    describe('parse()', function() {
-        it('should parse basic params', function() {
-            params = {
+describe('parser', function () {
+    describe('parse', function () {
+        it('should parse basic params', function () {
+            const params = {
                 fields: 'username,birthday',
                 limit: 10,
                 offset: 0,
                 sort: 'username,-birthday'
-            }
-            var output = parse(params, User);
-            expected = {
+            };
+            
+            const output = parse(params, User);
+            
+            const expected = {
                 attributes: [
                     'username',
                     'birthday'
@@ -28,19 +28,23 @@ describe('Parser', function() {
                     ['username', 'ASC'],
                     ['birthday', 'DESC']
                 ]
-            }
-            expect(output).to.deep.equal(expected);
+            };
+            
+            assert.deepEqual(output, expected);
         });
-        it('should parse "where" params', function() {
-            params = {
+        
+        it('should parse \'where\' params', function () {
+            const params = {
                 fields: 'username,birthday',
                 limit: 10,
                 offset: 0,
                 sort: 'username,-birthday',
                 username: 'test'
-            }
-            var output = parse(params, User);
-            expected = {
+            };
+            
+            const output = parse(params, User);
+            
+            const expected = {
                 attributes: [
                     'username',
                     'birthday'
@@ -54,47 +58,71 @@ describe('Parser', function() {
                     ['username', 'ASC'],
                     ['birthday', 'DESC']
                 ]
-            }
-            expect(output).to.deep.equal(expected);
+            };
+            
+            assert.deepEqual(output, expected);
         });
     });
 
-    describe('parseString()', function() {
-        it('should separate a comma-delimited string', function() {
-            expect(parseString('test0,test1,test2')).to.deep.equal(['test0', 'test1', 'test2'])
+    describe('parse string', function () {
+        it('should split comma-delimited string', function () {
+            const input = 'A,B,C';
+            const expected = ['A', 'B', 'C'];
+            
+            const output = parseString(input);
+            
+            assert.deepEqual(output, expected);
         });
-        it('should return undefined for a non-string argument', function() {
-            expect(parseString()).to.be.undefined;
-        });
-    });
-
-    describe('parseInteger()', function() {
-        it('should return the integer value of a string', function() {
-            expect(parseInteger('54')).to.equal(54);
-        });
-        it('should return undefined for invalid string inputs', function() {
-            expect(parseInteger('test')).to.be.undefined;
-        });
-        it('should return null for null inputs', function() {
-            expect(parseInteger()).to.be.undefined;
+        
+        it('should return undefined for a non-string argument', function () {
+            assert.equal(parseString(), undefined);
         });
     });
 
-    describe('parseJson()', function() {
-        it('should return the object encoded in the string', function() {
-            expect(parseJson('{"test":0,"thing":"hello"}')).to.deep.equal({test:0, thing:'hello'});
+    describe('parse integer', function () {
+        it('should return the integer value of a string', function () {
+            assert.equal(parseInteger('54'), 54);
         });
-        it('should return the comma-split string if it is incorrectly formatted', function() {
-            expect(parseJson('this,is,not,json')).to.deep.equal(['this', 'is', 'not', 'json']);
+        
+        it('should return undefined for invalid string inputs', function () {
+            assert.equal(parseInteger('test'), undefined);
+        });
+        
+        it('should return null for null inputs', function () {
+            assert.equal(parseInteger(), undefined);
         });
     });
 
-    describe('parseSort()', function() {
-        it('should return undefined for null inputs', function() {
-            expect(parseSort()).to.be.undefined;
+    describe('parse json', function () {
+        it('should return the object encoded in the string', function () {
+            const input = '{"test":0,"thing":"hello"}';
+            const expected = { test:0, thing:'hello' };
+            
+            assert.deepEqual(parseJson(input), expected);
         });
-        it('should interpret sort strings properly', function() {
-            expect(parseSort('stuff,-things,otherstuff')).to.deep.equal([['stuff', 'ASC'], ['things', 'DESC'], ['otherstuff', 'ASC']]);
+        
+        it('should return the comma-split string if it is incorrectly formatted', function () {
+            const input = 'this,is,not,json';
+            const expected = ['this', 'is', 'not', 'json'];
+            
+            assert.deepEqual(parseJson(input), expected);
+        });
+    });
+
+    describe('parse sort', function () {
+        it('should return undefined for null inputs', function () {
+            assert.equal(parseSort(), undefined);
+        });
+        
+        it('should interpret sort strings properly', function () {
+            const input = 'stuff,-things,otherstuff';
+            const expected = [
+                ['stuff', 'ASC'], 
+                ['things', 'DESC'], 
+                ['otherstuff', 'ASC']
+            ];
+            
+            assert.deepEqual(parseSort(input), expected);
         });
     });
 });

@@ -1,5 +1,5 @@
 const request = require('supertest');
-var { app } = require('./helper');
+const { app } = require('./helper');
 var chai = require('chai');
 expect = chai.expect;
 
@@ -7,7 +7,7 @@ describe('handlers', function () {
     describe('get', function () {
         it('should respond with correct json', function(done) {
             request(app)
-                .get('/user/1')
+                .get('/users/1')
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
@@ -22,13 +22,13 @@ describe('handlers', function () {
     describe('create', function() {
         it('should create a new instance', function(done) {
             request(app)
-                .post('/user')
+                .post('/users')
                 .send({username:'othertest', birthday:'01/01/00'})
                 .set('Accept', 'application/json')
                 .expect(201)
                 .expect({success: true}, function() {
                     request(app)
-                        .get('/user/2')
+                        .get('/users/2')
                         .set('Accept', 'application/json')
                         .end((err, res) => {
                             expect(res.statusCode).to.equal(200);
@@ -44,7 +44,7 @@ describe('handlers', function () {
     describe('query', function() {
         it('should respond with json', function(done) {
             request(app)
-                .get('/user')
+                .get('/users')
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
@@ -54,7 +54,7 @@ describe('handlers', function () {
         });
         it('should filter based on a field', function(done) {
             request(app)
-                .get("/user?username=test")
+                .get("/users?username=test")
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
@@ -64,7 +64,7 @@ describe('handlers', function () {
         });
         it('should limit results', function(done) {
             request(app)
-                .get("/user?limit=1")
+                .get("/users?limit=1")
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(206);
@@ -74,7 +74,7 @@ describe('handlers', function () {
         });
         it('should offset results', function(done) {
             request(app)
-                .get("/user?offset=1")
+                .get("/users?offset=1")
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
@@ -84,7 +84,7 @@ describe('handlers', function () {
         });
         it('should send only the requested fields', function(done) {
             request(app)
-                .get("/user?fields=username")
+                .get("/users?fields=username")
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
@@ -95,7 +95,7 @@ describe('handlers', function () {
         });
         it('should sort results', function(done) {
             request(app)
-                .get("/user?sort=username")
+                .get("/users?sort=username")
                 .set('Accept', 'application/json')
                 .end((err, res) => {
                     expect(res.statusCode).to.equal(200);
@@ -107,13 +107,13 @@ describe('handlers', function () {
 
         it('should handle complex queries', function(done) {
             request(app)
-                .post('/user')
+                .post('/users')
                 .send({username:'lasttest', birthday:'8/29/18'})
                 .set('Accept', 'application/json')
                 .expect(201)
                 .expect({success: true}, function() {
                     request(app)
-                        .get('/user?limit=1&offset=1&fields=username,id')
+                        .get('/users?limit=1&offset=1&fields=username,id')
                         .set('Accept', 'application/json')
                         .end((err, res) => {
                             expect(res.statusCode).to.equal(206);
@@ -130,13 +130,13 @@ describe('handlers', function () {
     describe('update', function() {
         it('should update an existing instance', function(done) {
             request(app)
-                .put('/user/2')
+                .put('/users/2')
                 .send({username:'changed'})
                 .set('Accept', 'application/json')
                 .expect(201)
                 .expect({success: true}, function() {
                     request(app)
-                        .get('/user/2')
+                        .get('/users/2')
                         .set('Accept', 'application/json')
                         .end((err, res) => {
                             expect(res.statusCode).to.equal(200);
@@ -152,12 +152,12 @@ describe('handlers', function () {
     describe('remove', function() {
         it('should delete an instance', function(done) {
             request(app)
-                .delete('/user/2')
+                .delete('/users/2')
                 .set('Accept', 'application/json')
                 .expect(204)
                 .expect({success: true}, function() {
                     request(app)
-                        .get('/user')
+                        .get('/users')
                         .set('Accept', 'application/json')
                         .end((err, res) => {
                             expect(res.statusCode).to.equal(200);
