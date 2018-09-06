@@ -34,6 +34,7 @@ describe('parser', function () {
         
         it('should parse \'where\' params', function () {
             const params = {
+                fake: true,
                 fields: 'username,birthday',
                 limit: 10,
                 offset: 0,
