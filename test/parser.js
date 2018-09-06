@@ -1,5 +1,4 @@
 const assert = require('assert');
-const Sequelize = require('sequelize');
 
 const { parse, parseString, parseInteger, parseJson, parseSort } = require('../src/parser');
 const { User } = require('./helper');
