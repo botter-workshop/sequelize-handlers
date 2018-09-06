@@ -86,6 +86,16 @@ describe('handlers', function () {
                 });
         });
         
+        it('should fallback with bad offset and limit', function (done) {
+            request(app)
+                .get("/users?offset=B&limit=C")
+                .expect(200)
+                .end((err, res) => {
+                    assert.equal(res.body.length, 2);
+                    done();
+                });
+        });
+        
         it('should send only the requested fields', function (done) {
             request(app)
                 .get("/users?fields=username")
