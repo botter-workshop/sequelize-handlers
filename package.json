@@ -17,6 +17,9 @@
     "type": "git",
     "url": "git+https://github.com/botter-workshop/sequelize-handlers.git"
   },
+  "scripts": {
+    "test": "mocha"
+  },
   "author": "Ben Hanna <benpaulhanna@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -25,5 +28,13 @@
   "homepage": "https://github.com/botter-workshop/sequelize-handlers#readme",
   "dependencies": {
     "lodash": "^4.13.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "express": "^4.16.3",
+    "mocha": "^5.2.0",
+    "pg": "^7.4.3",
+    "sequelize": "^4.38.0",
+    "supertest": "^3.1.0"
   }
 }
