@@ -18,7 +18,7 @@ describe('handlers', function () {
         
         it('should return not found', function (done) {
             request(app)
-                .get('/users/3')
+                .get('/users/0')
                 .expect(404)
                 .end(done);
         });
@@ -133,8 +133,7 @@ describe('handlers', function () {
         it('should update an existing instance', function (done) {
             request(app)
                 .put('/users/2')
-                .send({username:'changed'})
-                .set('Accept', 'application/json')
+                .send({ username:'changed' })
                 .expect(201)
                 .expect({success: true}, function() {
                     request(app)
@@ -148,13 +147,20 @@ describe('handlers', function () {
                         });
                 });
         });
+        
+        it('should return not found', function (done) {
+            request(app)
+                .put('/users/0')
+                .send({ username:'changed' })
+                .expect(404)
+                .end(done);
+        });
     });
 
     describe('remove', function() {
         it('should delete an instance', function(done) {
             request(app)
                 .delete('/users/2')
-                .set('Accept', 'application/json')
                 .expect(204)
                 .expect({success: true}, function() {
                     request(app)
@@ -165,6 +171,13 @@ describe('handlers', function () {
                             done();
                         });
                 });
+        });
+        
+        it('should return not found', function (done) {
+            request(app)
+                .delete('/users/0')
+                .expect(404)
+                .end(done);
         });
     });
 });
